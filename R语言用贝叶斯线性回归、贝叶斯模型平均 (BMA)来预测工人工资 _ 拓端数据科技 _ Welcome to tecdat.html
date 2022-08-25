@@ -1,0 +1,2321 @@
+<!DOCTYPE html>
+<!-- saved from url=(0212)http://tecdat.cn/r%e8%af%ad%e8%a8%80%e7%94%a8%e8%b4%9d%e5%8f%b6%e6%96%af%e7%ba%bf%e6%80%a7%e5%9b%9e%e5%bd%92%e3%80%81%e8%b4%9d%e5%8f%b6%e6%96%af%e6%a8%a1%e5%9e%8b%e5%b9%b3%e5%9d%87-bma%e6%9d%a5%e9%a2%84%e6%b5%8b/ -->
+<html lang="zh-CN" class=" js flexbox flexboxlegacy canvas canvastext webgl no-touch geolocation postmessage websqldatabase indexeddb hashchange history draganddrop websockets rgba hsla multiplebgs backgroundsize borderimage borderradius boxshadow textshadow opacity cssanimations csscolumns cssgradients cssreflections csstransforms csstransforms3d csstransitions fontface generatedcontent video audio localstorage sessionstorage webworkers no-applicationcache svg inlinesvg smil svgclippaths"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width">
+<link rel="profile" href="http://gmpg.org/xfn/11">
+<link rel="pingback" href="http://tecdat.cn/xmlrpc.php">
+<!--[if lt IE 9]>
+<script src="http://tecdat.cn/wp-content/themes/minamaze/lib/scripts/html5.js" type="text/javascript"></script>
+<![endif]-->
+	
+
+	
+	
+<title>R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 | 拓端数据科技 /  Welcome to tecdat</title>
+<meta name="robots" content="max-image-preview:large">
+
+<!-- All in One SEO Pack 2.3.9.1 by Michael Torbert of Semper Fi Web Design[380,455] -->
+<meta name="description" itemprop="description" content="贝叶斯模型提供了变量选择技术，确保变量选择的可靠性。">
+
+<link rel="canonical" href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e7%94%a8%e8%b4%9d%e5%8f%b6%e6%96%af%e7%ba%bf%e6%80%a7%e5%9b%9e%e5%bd%92%e3%80%81%e8%b4%9d%e5%8f%b6%e6%96%af%e6%a8%a1%e5%9e%8b%e5%b9%b3%e5%9d%87-bma%e6%9d%a5%e9%a2%84%e6%b5%8b/">
+<!-- /all in one seo pack -->
+<link rel="dns-prefetch" href="http://cdn.bootcss.com/">
+<link rel="dns-prefetch" href="http://s.w.org/">
+<link rel="alternate" type="application/rss+xml" title="拓端数据科技 /  Welcome to tecdat » Feed" href="http://tecdat.cn/feed/">
+<link rel="alternate" type="application/rss+xml" title="拓端数据科技 /  Welcome to tecdat » 评论Feed" href="http://tecdat.cn/comments/feed/">
+<link rel="stylesheet" id="wp-block-library-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/style.min.css" type="text/css" media="all">
+<style id="global-styles-inline-css" type="text/css">
+body{--wp--preset--color--black: #000000;--wp--preset--color--cyan-bluish-gray: #abb8c3;--wp--preset--color--white: #ffffff;--wp--preset--color--pale-pink: #f78da7;--wp--preset--color--vivid-red: #cf2e2e;--wp--preset--color--luminous-vivid-orange: #ff6900;--wp--preset--color--luminous-vivid-amber: #fcb900;--wp--preset--color--light-green-cyan: #7bdcb5;--wp--preset--color--vivid-green-cyan: #00d084;--wp--preset--color--pale-cyan-blue: #8ed1fc;--wp--preset--color--vivid-cyan-blue: #0693e3;--wp--preset--color--vivid-purple: #9b51e0;--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple: linear-gradient(135deg,rgba(6,147,227,1) 0%,rgb(155,81,224) 100%);--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan: linear-gradient(135deg,rgb(122,220,180) 0%,rgb(0,208,130) 100%);--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange: linear-gradient(135deg,rgba(252,185,0,1) 0%,rgba(255,105,0,1) 100%);--wp--preset--gradient--luminous-vivid-orange-to-vivid-red: linear-gradient(135deg,rgba(255,105,0,1) 0%,rgb(207,46,46) 100%);--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray: linear-gradient(135deg,rgb(238,238,238) 0%,rgb(169,184,195) 100%);--wp--preset--gradient--cool-to-warm-spectrum: linear-gradient(135deg,rgb(74,234,220) 0%,rgb(151,120,209) 20%,rgb(207,42,186) 40%,rgb(238,44,130) 60%,rgb(251,105,98) 80%,rgb(254,248,76) 100%);--wp--preset--gradient--blush-light-purple: linear-gradient(135deg,rgb(255,206,236) 0%,rgb(152,150,240) 100%);--wp--preset--gradient--blush-bordeaux: linear-gradient(135deg,rgb(254,205,165) 0%,rgb(254,45,45) 50%,rgb(107,0,62) 100%);--wp--preset--gradient--luminous-dusk: linear-gradient(135deg,rgb(255,203,112) 0%,rgb(199,81,192) 50%,rgb(65,88,208) 100%);--wp--preset--gradient--pale-ocean: linear-gradient(135deg,rgb(255,245,203) 0%,rgb(182,227,212) 50%,rgb(51,167,181) 100%);--wp--preset--gradient--electric-grass: linear-gradient(135deg,rgb(202,248,128) 0%,rgb(113,206,126) 100%);--wp--preset--gradient--midnight: linear-gradient(135deg,rgb(2,3,129) 0%,rgb(40,116,252) 100%);--wp--preset--duotone--dark-grayscale: url('#wp-duotone-dark-grayscale');--wp--preset--duotone--grayscale: url('#wp-duotone-grayscale');--wp--preset--duotone--purple-yellow: url('#wp-duotone-purple-yellow');--wp--preset--duotone--blue-red: url('#wp-duotone-blue-red');--wp--preset--duotone--midnight: url('#wp-duotone-midnight');--wp--preset--duotone--magenta-yellow: url('#wp-duotone-magenta-yellow');--wp--preset--duotone--purple-green: url('#wp-duotone-purple-green');--wp--preset--duotone--blue-orange: url('#wp-duotone-blue-orange');--wp--preset--font-size--small: 13px;--wp--preset--font-size--medium: 20px;--wp--preset--font-size--large: 36px;--wp--preset--font-size--x-large: 42px;}.has-black-color{color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-color{color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-color{color: var(--wp--preset--color--white) !important;}.has-pale-pink-color{color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-color{color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-color{color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-color{color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-color{color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-color{color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-color{color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-color{color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-color{color: var(--wp--preset--color--vivid-purple) !important;}.has-black-background-color{background-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-background-color{background-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-background-color{background-color: var(--wp--preset--color--white) !important;}.has-pale-pink-background-color{background-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-background-color{background-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-background-color{background-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-background-color{background-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-background-color{background-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-background-color{background-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-background-color{background-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-background-color{background-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-background-color{background-color: var(--wp--preset--color--vivid-purple) !important;}.has-black-border-color{border-color: var(--wp--preset--color--black) !important;}.has-cyan-bluish-gray-border-color{border-color: var(--wp--preset--color--cyan-bluish-gray) !important;}.has-white-border-color{border-color: var(--wp--preset--color--white) !important;}.has-pale-pink-border-color{border-color: var(--wp--preset--color--pale-pink) !important;}.has-vivid-red-border-color{border-color: var(--wp--preset--color--vivid-red) !important;}.has-luminous-vivid-orange-border-color{border-color: var(--wp--preset--color--luminous-vivid-orange) !important;}.has-luminous-vivid-amber-border-color{border-color: var(--wp--preset--color--luminous-vivid-amber) !important;}.has-light-green-cyan-border-color{border-color: var(--wp--preset--color--light-green-cyan) !important;}.has-vivid-green-cyan-border-color{border-color: var(--wp--preset--color--vivid-green-cyan) !important;}.has-pale-cyan-blue-border-color{border-color: var(--wp--preset--color--pale-cyan-blue) !important;}.has-vivid-cyan-blue-border-color{border-color: var(--wp--preset--color--vivid-cyan-blue) !important;}.has-vivid-purple-border-color{border-color: var(--wp--preset--color--vivid-purple) !important;}.has-vivid-cyan-blue-to-vivid-purple-gradient-background{background: var(--wp--preset--gradient--vivid-cyan-blue-to-vivid-purple) !important;}.has-light-green-cyan-to-vivid-green-cyan-gradient-background{background: var(--wp--preset--gradient--light-green-cyan-to-vivid-green-cyan) !important;}.has-luminous-vivid-amber-to-luminous-vivid-orange-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-amber-to-luminous-vivid-orange) !important;}.has-luminous-vivid-orange-to-vivid-red-gradient-background{background: var(--wp--preset--gradient--luminous-vivid-orange-to-vivid-red) !important;}.has-very-light-gray-to-cyan-bluish-gray-gradient-background{background: var(--wp--preset--gradient--very-light-gray-to-cyan-bluish-gray) !important;}.has-cool-to-warm-spectrum-gradient-background{background: var(--wp--preset--gradient--cool-to-warm-spectrum) !important;}.has-blush-light-purple-gradient-background{background: var(--wp--preset--gradient--blush-light-purple) !important;}.has-blush-bordeaux-gradient-background{background: var(--wp--preset--gradient--blush-bordeaux) !important;}.has-luminous-dusk-gradient-background{background: var(--wp--preset--gradient--luminous-dusk) !important;}.has-pale-ocean-gradient-background{background: var(--wp--preset--gradient--pale-ocean) !important;}.has-electric-grass-gradient-background{background: var(--wp--preset--gradient--electric-grass) !important;}.has-midnight-gradient-background{background: var(--wp--preset--gradient--midnight) !important;}.has-small-font-size{font-size: var(--wp--preset--font-size--small) !important;}.has-medium-font-size{font-size: var(--wp--preset--font-size--medium) !important;}.has-large-font-size{font-size: var(--wp--preset--font-size--large) !important;}.has-x-large-font-size{font-size: var(--wp--preset--font-size--x-large) !important;}
+</style>
+<link rel="stylesheet" id="default-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/qqkf.css" type="text/css" media="all">
+<link rel="stylesheet" id="pb_animate-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/animate.css" type="text/css" media="all">
+<link rel="stylesheet" id="hover-effects-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/hover.css" type="text/css" media="all">
+<link rel="stylesheet" id="thinkup-bootstrap-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/bootstrap.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="thinkup-shortcodes-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/style-shortcodes.css" type="text/css" media="all">
+<link rel="stylesheet" id="thinkup-style-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/style.css" type="text/css" media="all">
+<link rel="stylesheet" id="animatescroll-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/scroll2.css" type="text/css" media="all">
+<link rel="stylesheet" id="tablepress-default-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/tablepress-combined.min.css" type="text/css" media="all">
+<link rel="stylesheet" id="thinkup-responsive-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/style-responsive.css" type="text/css" media="all">
+<script src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/hm.js.下载"></script><script type="text/javascript" src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js?ver=1.12.4" id="jquery-js"></script>
+<script type="text/javascript" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/qqkf.js.下载" id="default-js"></script>
+<script type="text/javascript" id="ays-pb-js-extra">
+/* <![CDATA[ */
+var pbLocalizeObj = {"icons":{"close_icon":"<svg class=\"ays_pb_material_close_icon\" xmlns=\"https:\/\/www.w3.org\/2000\/svg\" height=\"36px\" viewBox=\"0 0 24 24\" width=\"36px\" fill=\"#000000\" alt=\"Pop-up Close\"><path d=\"M0 0h24v24H0z\" fill=\"none\"\/><path d=\"M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z\"\/><\/svg>","close_circle_icon":"<svg class=\"ays_pb_material_close_circle_icon\" xmlns=\"https:\/\/www.w3.org\/2000\/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"36\" alt=\"Pop-up Close\"><path d=\"M0 0h24v24H0z\" fill=\"none\"\/><path d=\"M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm5 13.59L15.59 17 12 13.41 8.41 17 7 15.59 10.59 12 7 8.41 8.41 7 12 10.59 15.59 7 17 8.41 13.41 12 17 15.59z\"\/><\/svg>","volume_up_icon":"<svg class=\"ays_pb_fa_volume\" xmlns=\"https:\/\/www.w3.org\/2000\/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"36\"><path d=\"M0 0h24v24H0z\" fill=\"none\"\/><path d=\"M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z\"\/><\/svg>","volume_mute_icon":"<svg xmlns=\"https:\/\/www.w3.org\/2000\/svg\" height=\"24\" viewBox=\"0 0 24 24\" width=\"24\"><path d=\"M0 0h24v24H0z\" fill=\"none\"\/><path d=\"M7 9v6h4l5 5V4l-5 5H7z\"\/><\/svg>"}};
+/* ]]> */
+</script>
+<script type="text/javascript" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/ays-pb-public.js.下载" id="ays-pb-js"></script>
+<link rel="https://api.w.org/" href="http://tecdat.cn/wp-json/"><link rel="alternate" type="application/json" href="http://tecdat.cn/wp-json/wp/v2/posts/24141"><link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://tecdat.cn/xmlrpc.php?rsd">
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="http://tecdat.cn/wp-includes/wlwmanifest.xml"> 
+<meta name="generator" content="WordPress 6.0.1">
+<link rel="shortlink" href="http://tecdat.cn/?p=24141">
+<link rel="alternate" type="application/json+oembed" href="http://tecdat.cn/wp-json/oembed/1.0/embed?url=http%3A%2F%2Ftecdat.cn%2Fr%25e8%25af%25ad%25e8%25a8%2580%25e7%2594%25a8%25e8%25b4%259d%25e5%258f%25b6%25e6%2596%25af%25e7%25ba%25bf%25e6%2580%25a7%25e5%259b%259e%25e5%25bd%2592%25e3%2580%2581%25e8%25b4%259d%25e5%258f%25b6%25e6%2596%25af%25e6%25a8%25a1%25e5%259e%258b%25e5%25b9%25b3%25e5%259d%2587-bma%25e6%259d%25a5%25e9%25a2%2584%25e6%25b5%258b%2F">
+<link rel="alternate" type="text/xml+oembed" href="http://tecdat.cn/wp-json/oembed/1.0/embed?url=http%3A%2F%2Ftecdat.cn%2Fr%25e8%25af%25ad%25e8%25a8%2580%25e7%2594%25a8%25e8%25b4%259d%25e5%258f%25b6%25e6%2596%25af%25e7%25ba%25bf%25e6%2580%25a7%25e5%259b%259e%25e5%25bd%2592%25e3%2580%2581%25e8%25b4%259d%25e5%258f%25b6%25e6%2596%25af%25e6%25a8%25a1%25e5%259e%258b%25e5%25b9%25b3%25e5%259d%2587-bma%25e6%259d%25a5%25e9%25a2%2584%25e6%25b5%258b%2F&amp;format=xml">
+<link rel="preload" as="style" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/prettify.css">
+<style type="text/css">
+body { 
+     margin-top: 0px; 
+     margin-right: 0px; 
+     margin-bottom: 0px; 
+     margin-left: 0px; 
+    } 
+</style>
+<link rel="icon" href="http://tecdat.cn/wp-content/uploads/2018/05/cropped-logo-32x32.png" sizes="32x32">
+<link rel="icon" href="http://tecdat.cn/wp-content/uploads/2018/05/cropped-logo-192x192.png" sizes="192x192">
+<link rel="apple-touch-icon" href="http://tecdat.cn/wp-content/uploads/2018/05/cropped-logo-180x180.png">
+<meta name="msapplication-TileImage" content="http://tecdat.cn/wp-content/uploads/2018/05/cropped-logo-270x270.png">
+		<style type="text/css" id="wp-custom-css">
+			/*
+您可以在此处加入您的CSS。
+* {font-family: "Microsoft YaHei" !important;}
+点击上方的帮助图标来了解更多。
+*/
+
+/*
+* {font-family: "Microsoft YaHei" !important;}
+*/
+
+* {font-family:'Microsoft yahei','Arial';}
+
+
+/*
+纯css解决当img为空时出现空框，图裂的问题
+*/
+img[src=""],img:not([src]){
+
+          opacity:0;
+
+}
+
+//解决当img为空时出现空框，图裂的问题
+
+img[src=""],img:not([src]){
+
+          opacity:0;
+
+}
+
+/*
+付款页面微信客服
+*/
+.hover_img a { position:relative; }
+.hover_img a span { position:absolute; display:none; z-index:1166; }
+.hover_img a:hover span { display:block; }
+
+/*
+元素周围空间为0
+*/
+.m0{
+    margin-top: 0!important;
+    margin-bottom: 0!important;
+	   margin-left: 0!important;
+	   margin-right: 0!important;
+
+}
+.m1{
+    margin-top: 0!important;
+    margin-bottom: 0!important;
+	   margin-left: 0!important;
+	   margin-right: 0!important;
+
+}
+/*
+隐约出现文字
+*/
+@keyframes fadeIn {
+  from {opacity: 0}
+  to {opacity: 1}
+}
+
+.fadeInAnimated {
+  opacity: 0;
+  animation: fadeIn 5.2s forwards; /* forwards (animation-fill-mode) retains the style from the last keyframe when the animation ends */
+}
+
+/*
+隐约出现文字快
+*/
+@keyframes fadeInfast {
+  from {opacity: 0}
+  to {opacity: 1}
+}
+
+.fadeInAnimatedfast {
+  opacity: 0;
+  animation: fadeInfast 1.8s forwards;
+	  transition: opacity 1.2s;
+  transition-delay: 1.25s;
+
+	/* forwards (animation-fill-mode) retains the style from the last keyframe when the animation ends */
+}
+
+/*
+延迟出现效果
+*/
+.delay-me {
+  transition-delay: 1.65s;
+}
+
+/*
+文字浮动出现效果
+*/
+.rawfloat{   
+    animation-name: rawfloat; 
+    animation-duration: 1s; 
+    animation-iteration-count: 1; 
+    animation-timing-function: ease-in-out; 
+    margin-left: 30px; 
+    margin-top: 5px; 
+} 
+  
+@keyframes rawfloat { 
+    0% { transform: translate(0,  15px); } 
+    100%   { transform: translate(0, 0px); }     
+} 
+
+
+
+/*
+文字隐约浮动出现效果
+*/
+
+.floating { 
+		opacity: 0;
+  animation: fadeIn 1s forwards; 
+    animation-name: floating; 
+    animation-duration: 1s; 
+    animation-iteration-count: 1; 
+    animation-timing-function: ease-in-out; 
+    margin-left: 30px; 
+    margin-top: 5px; 
+
+} 
+  
+@keyframes floating { 
+		from {opacity: 0}
+  to {opacity: 1}
+    0% { transform: translate(0,  15px); } 
+    100%  { transform: translate(0, 0px); } 
+
+       
+} 
+
+/*
+文字隐约浮动出现效果慢
+*/
+
+.floatingslow { 
+		opacity: 0;
+  animation: fadeIn 2.6s forwards; 
+    animation-name: floatingslow; 
+    animation-duration: 2.6s; 
+    animation-iteration-count: 1; 
+    animation-timing-function: ease-in-out; 
+    margin-left: 30px; 
+    margin-top: 5px; 
+
+} 
+  
+@keyframes floatingslow { 
+		from {opacity: 0}
+  to {opacity: 1}
+    0% { transform: translate(0,  15px); } 
+    100%  { transform: translate(0, 0px); } 
+
+       
+} 
+
+
+/*
+减少页边距
+*/
+
+body { 
+     margin-top: 0px; 
+     margin-right: 0px; 
+     margin-bottom: 0px; 
+     margin-left: 0px; 
+    } 
+
+/*
+下载符号
+*/
+
+.download.icon {
+  color: #000;
+  position: absolute;
+  margin-left: 3px;
+  margin-top: 18px;
+  width: 13px;
+  height: 4px;
+  border-radius: 1px;
+  border: solid 1px currentColor;
+  border-top: none;
+}
+.download.icon:before {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: -9px;
+  width: 1px;
+  height: 10px;
+  background-color: currentColor;
+}
+.download.icon:after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: -4px;
+  width: 4px;
+  height: 4px;
+  border-top: solid 1px currentColor;
+  border-right: solid 1px currentColor;
+  -webkit-transform: rotate(135deg);
+          transform: rotate(135deg);
+}
+
+
+/*
+出现下划线
+*/
+.underline-on-hover:hover {
+    text-decoration: underline;
+}
+
+
+
+/*
+下滑到底部
+*/
+
+html {
+  scroll-behavior: smooth;
+ }
+ 
+ a {
+  text-decoration: none;
+  color: black;
+ } 
+ 
+ #down {
+  margin-top: 100%;
+  padding-bottom: 25%;
+ } 
+
+
+/*
+鼠标滑动出现 导致页首消失
+*/
+
+header {
+  opacity: 1;
+  -webkit-transition: opacity .5s .25s ease-out;
+  transition: opacity .5s .25s ease-out;
+}
+
+/*
+页面全屏
+*/
+body.custom-background #body-core, #content-core,#header-core,#footer-core,#footer-col1{ max-width: 100%; }
+
+
+
+/*
+相关文章推荐
+*/
+#relatedposts h3{ font-size: 18px; margin: 88px 10px 50px 10px; font-weight: normal; text-align:center ;}
+#relatedposts ul { list-style: none;  text-align:center;}
+#relatedposts ul li { float: right;margin-right: 50px; margin-left: 10px;margin-bottom:58px; width: 226px;background: #F0F0F0; font-size: 21px;padding:18px }
+#relatedposts img { border: 0px solid #F0F0F0; background: #F0F0F0; padding: 0px; margin-bottom: 1px; }    
+#relatedposts a:hover { color: #F33F3F;text-decoration: underline; }
+ 
+
+/*
+段落开头字体下沉
+*/
+.has-drop-cap:not(:focus):first-letter {
+    float: left;
+    font-size: 6.8em;
+    line-height: .68;
+    font-weight: 100;
+    margin: .05em .1em 0 0;
+    text-transform: uppercase;
+    font-style: normal;
+}
+
+
+
+/*
+文字隐约浮动从左到右
+*/
+#slider {
+    position: absolute;
+    width: 358px;
+    height: 8px;
+    transform: translateX(-6%);
+    -webkit-transform: translateX(-6%);
+}
+
+.slide-in {
+	opacity: 0;
+    animation: slide-in 1.8s forwards;
+    -webkit-animation: slide-in 1.8s forwards;
+}
+
+
+    
+@keyframes slide-in {
+	from {opacity: 0}
+  to {opacity: 1}
+	
+    100% { transform: translateX(0%); }
+}
+
+@-webkit-keyframes slide-in {
+    100% { -webkit-transform: translateX(0%); }
+}
+  
+
+
+
+
+/*
+文字隐约浮动从右到左
+*/
+#slider2 {
+	   color:#ffffff;
+    position: absolute;
+    width: 188px;
+    height: 8px;
+    transform: translateX(6%);
+    -webkit-transform: translateX(6%);
+}
+
+.slide-in2 {
+		opacity: 0;
+
+    animation: slide-in 1.8s forwards;
+    -webkit-animation: slide-in 1.8s forwards;
+}
+
+
+    
+@keyframes slide-in2 {
+	from {opacity: 0}
+  to {opacity: 1}
+	
+    100% { transform: translateX(0%); }
+}
+
+@-webkit-keyframes slide-in2 {
+    100% { -webkit-transform: translateX(0%); }
+}
+  
+
+/*
+元素背景色为白色
+*/
+.backgcolw {
+    background-color:white;
+
+}		</style>
+		
+<link rel="stylesheet" type="text/css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/prettify.css"></head>
+
+<body class="post-template-default single single-post postid-24141 single-format-standard layout-sidebar-none layout-responsive header-style1 group-blog">
+
+
+
+<div id="body-core" class="hfeed site">
+
+	<header id="site-header">
+
+		
+		<div id="pre-header">
+		<div class="wrap-safari">
+		<div id="pre-header-core" class="main-navigation">
+  
+			
+			<div id="pre-header-search">	<form method="get" class="searchform" action="http://tecdat.cn/" role="search">
+		<input type="text" class="search" name="s" value="" placeholder="Search">
+		<input type="submit" class="searchsubmit" name="submit" value="Search">
+	</form></div>
+			
+		</div>
+		</div>
+		</div>
+		<!-- #pre-header -->
+
+		<div id="header">
+		<div id="header-core">
+
+			<div id="logo">
+			<a rel="home" href="http://tecdat.cn/"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/logo-1.png" alt="Logo"></a>
+			</div>
+
+			<div id="header-links" class="main-navigation">
+			<div id="header-links-inner" class="header-links">
+				<ul id="menu-%e4%b8%bb%e8%8f%9c%e5%8d%95" class="menu"><li id="menu-item-18" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-18"><a href="http://tecdat.cn/">首页</a></li>
+<li id="menu-item-16" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-16"><a href="http://tecdat.cn/%e6%9c%8d%e5%8a%a1/">服务和产品</a>
+<ul class="sub-menu">
+	<li id="menu-item-1195" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1195"><a href="http://tecdat.cn/%e6%8b%93%e7%ab%aftecdat%e6%95%b0%e6%8d%ae%e9%87%87%e9%9b%86/">数据采集</a></li>
+	<li id="menu-item-872" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-872"><a href="http://tecdat.cn/%e5%ae%9a%e5%88%b6%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88/">定制解决方案</a></li>
+	<li id="menu-item-864" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-864"><a href="http://tecdat.cn/%e8%b5%84%e6%9c%ac%e5%b8%82%e5%9c%ba/">资本市场</a></li>
+	<li id="menu-item-850" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-850"><a href="http://tecdat.cn/%e6%9c%8d%e5%8a%a1/%e5%8f%8d%e6%ac%ba%e8%af%88/">反欺诈</a></li>
+	<li id="menu-item-849" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-849"><a href="http://tecdat.cn/%e6%9c%8d%e5%8a%a1/%e5%8c%bb%e7%96%97%e4%bf%9d%e5%81%a5/">医疗保健</a></li>
+	<li id="menu-item-858" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-858"><a href="http://tecdat.cn/%e4%bf%9d%e9%99%a9%e5%88%86%e6%9e%90/">保险分析</a></li>
+</ul>
+</li>
+<li id="menu-item-353" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-353"><a href="http://tecdat.cn/%e6%8b%93%e7%ab%aftecdat%e6%99%ba%e5%ba%93/%e6%8b%93%e7%ab%aftecdat%e8%a7%82%e7%82%b9-%e6%b4%9e%e5%af%9f/">观点 · 洞察</a>
+<ul class="sub-menu">
+	<li id="menu-item-26" class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-26"><a href="http://tecdat.cn/%e6%8b%93%e7%ab%aftecdat%e6%99%ba%e5%ba%93/">智库</a></li>
+	<li id="menu-item-12166" class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12166"><a href="http://tecdat.cn/%e6%8b%93%e7%ab%af%e7%89%b9%e8%89%b2%e8%af%be%e7%a8%8b/">特色视频</a></li>
+	<li id="menu-item-1107" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1107"><a href="http://tecdat.cn/%e6%9c%80%e6%96%b0%e5%8a%a8%e6%80%81/">最新动态</a></li>
+	<li id="menu-item-1747" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1747"><a href="http://tecdat.cn/%e6%95%b0%e6%8d%ae%e5%8f%af%e8%a7%86%e5%8c%96gallery/">Gallery</a></li>
+</ul>
+</li>
+<li id="menu-item-14308" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14308"><a href="http://tecdat.cn/%e6%8a%80%e6%9c%af%e6%94%af%e6%8c%81/">技术支持</a></li>
+<li id="menu-item-5791" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5791"><a href="http://tecdat.cn/%e5%85%b3%e4%ba%8e%e6%88%91%e4%bb%ac/">关于我们</a></li>
+<li id="menu-item-22" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22"><a href="http://tecdat.cn/%e8%81%94%e7%b3%bb%e6%8b%93%e7%ab%aftecdat/">联系我们</a></li>
+<li id="menu-item-251" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-251"><a href="http://tecdat.cn/%e5%8a%a0%e5%85%a5%e6%8b%93%e7%ab%af%e6%95%b0%e6%8d%ae/">招贤纳士</a></li>
+</ul>			</div>
+			</div>
+			<!-- #header-links .main-navigation -->
+
+			<div id="header-responsive"><a class="btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span></a><div id="header-responsive-inner" class="responsive-links nav-collapse collapse"><ul id="menu-%e4%b8%bb%e8%8f%9c%e5%8d%95-1" class=""><li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-18"><a href="http://tecdat.cn/">首页</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-16"><a href="http://tecdat.cn/%e6%9c%8d%e5%8a%a1/">服务和产品</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1195"><a href="http://tecdat.cn/%e6%8b%93%e7%ab%aftecdat%e6%95%b0%e6%8d%ae%e9%87%87%e9%9b%86/">&nbsp; &nbsp; &nbsp; &nbsp; - 数据采集</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-872"><a href="http://tecdat.cn/%e5%ae%9a%e5%88%b6%e8%a7%a3%e5%86%b3%e6%96%b9%e6%a1%88/">&nbsp; &nbsp; &nbsp; &nbsp; - 定制解决方案</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-864"><a href="http://tecdat.cn/%e8%b5%84%e6%9c%ac%e5%b8%82%e5%9c%ba/">&nbsp; &nbsp; &nbsp; &nbsp; - 资本市场</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-850"><a href="http://tecdat.cn/%e6%9c%8d%e5%8a%a1/%e5%8f%8d%e6%ac%ba%e8%af%88/">&nbsp; &nbsp; &nbsp; &nbsp; - 反欺诈</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-849"><a href="http://tecdat.cn/%e6%9c%8d%e5%8a%a1/%e5%8c%bb%e7%96%97%e4%bf%9d%e5%81%a5/">&nbsp; &nbsp; &nbsp; &nbsp; - 医疗保健</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-858"><a href="http://tecdat.cn/%e4%bf%9d%e9%99%a9%e5%88%86%e6%9e%90/">&nbsp; &nbsp; &nbsp; &nbsp; - 保险分析</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-353"><a href="http://tecdat.cn/%e6%8b%93%e7%ab%aftecdat%e6%99%ba%e5%ba%93/%e6%8b%93%e7%ab%aftecdat%e8%a7%82%e7%82%b9-%e6%b4%9e%e5%af%9f/">观点 · 洞察</a>
+<ul class="sub-menu">
+	<li class="menu-item menu-item-type-post_type menu-item-object-page current_page_parent menu-item-26"><a href="http://tecdat.cn/%e6%8b%93%e7%ab%aftecdat%e6%99%ba%e5%ba%93/">&nbsp; &nbsp; &nbsp; &nbsp; - 智库</a></li>
+	<li class="menu-item menu-item-type-custom menu-item-object-custom menu-item-12166"><a href="http://tecdat.cn/%e6%8b%93%e7%ab%af%e7%89%b9%e8%89%b2%e8%af%be%e7%a8%8b/">&nbsp; &nbsp; &nbsp; &nbsp; - 特色视频</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1107"><a href="http://tecdat.cn/%e6%9c%80%e6%96%b0%e5%8a%a8%e6%80%81/">&nbsp; &nbsp; &nbsp; &nbsp; - 最新动态</a></li>
+	<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-1747"><a href="http://tecdat.cn/%e6%95%b0%e6%8d%ae%e5%8f%af%e8%a7%86%e5%8c%96gallery/">&nbsp; &nbsp; &nbsp; &nbsp; - Gallery</a></li>
+</ul>
+</li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14308"><a href="http://tecdat.cn/%e6%8a%80%e6%9c%af%e6%94%af%e6%8c%81/">技术支持</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-5791"><a href="http://tecdat.cn/%e5%85%b3%e4%ba%8e%e6%88%91%e4%bb%ac/">关于我们</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22"><a href="http://tecdat.cn/%e8%81%94%e7%b3%bb%e6%8b%93%e7%ab%aftecdat/">联系我们</a></li>
+<li class="menu-item menu-item-type-post_type menu-item-object-page menu-item-251"><a href="http://tecdat.cn/%e5%8a%a0%e5%85%a5%e6%8b%93%e7%ab%af%e6%95%b0%e6%8d%ae/">招贤纳士</a></li>
+</ul></div></div><!-- #header-responsive -->
+		</div>
+		</div>
+		<!-- #header -->
+	</header>
+	<!-- header -->
+
+		
+	<div id="content">
+	<div id="content-core">
+
+		<div id="main">
+		<div id="intro" class="option1"><div id="intro-core"><h1 class="page-title"><span>R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资</span></h1></div></div>
+		<div id="main-core">
+			
+
+			
+				
+		<article id="post-24141" class="post-24141 post type-post status-publish format-standard hentry category-7 category-974 category-968 category-977 tag-bma tag-247 tag-96 tag-306 tag-1954 tag-81">
+
+		<header class="entry-header entry-meta"><span class="author"><i class="fa fa-pencil"></i>By <a href="http://tecdat.cn/author/tecdat/" title="View all posts by tecdat" rel="author">tecdat</a></span><span class="date"><i class="fa fa-calendar-o"></i><a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e7%94%a8%e8%b4%9d%e5%8f%b6%e6%96%af%e7%ba%bf%e6%80%a7%e5%9b%9e%e5%bd%92%e3%80%81%e8%b4%9d%e5%8f%b6%e6%96%af%e6%a8%a1%e5%9e%8b%e5%b9%b3%e5%9d%87-bma%e6%9d%a5%e9%a2%84%e6%b5%8b/" title="R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资"><time datetime="2021-11-02T13:04:24+08:00">11月 2, 2021</time></a></span><span class="category"><i class="fa fa-folder-open"></i><a href="http://tecdat.cn/category/%e5%a4%a7%e6%95%b0%e6%8d%ae%e9%83%a8%e8%90%bd/" rel="category tag">大数据部落</a>, <a href="http://tecdat.cn/category/%e6%95%b0%e7%90%86%e7%bb%9f%e8%ae%a1/" rel="category tag">数理统计</a>, <a href="http://tecdat.cn/category/%e7%bb%8f%e6%b5%8e/" rel="category tag">经济</a>, <a href="http://tecdat.cn/category/%e8%ae%a1%e7%ae%97%e6%9c%ba%e7%a7%91%e5%ad%a6%e4%b8%8e%e6%8a%80%e6%9c%af/" rel="category tag">计算机科学与技术</a></span><span class="tags"><i class="fa fa-tags"></i><a href="http://tecdat.cn/tag/bma/" rel="tag">BMA</a>, <a href="http://tecdat.cn/tag/%e5%9b%9e%e5%bd%92/" rel="tag">回归</a>, <a href="http://tecdat.cn/tag/%e7%ba%bf%e6%80%a7%e5%9b%9e%e5%bd%92/" rel="tag">线性回归</a>, <a href="http://tecdat.cn/tag/%e8%b4%9d%e5%8f%b6%e6%96%af/" rel="tag">贝叶斯</a>, <a href="http://tecdat.cn/tag/%e8%b4%9d%e5%8f%b6%e6%96%af%e6%a8%a1%e5%9e%8b%e5%b9%b3%e5%9d%87/" rel="tag">贝叶斯模型平均</a>, <a href="http://tecdat.cn/tag/%e9%a2%84%e6%b5%8b/" rel="tag">预测</a></span></header><!-- .entry-header -->
+		<div class="entry-content">
+			
+<div class="wp-block-media-text alignwide is-stacked-on-mobile has-background" style="background-color:#0a1c2b;grid-template-columns:54% auto"><figure class="wp-block-media-text__media"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/4aa7ac528f2d4cec9558868812c33a3e.jpg" alt="" class="wp-image-8207 size-full"></figure><div class="wp-block-media-text__content">
+<p class="floating has-very-light-gray-color has-text-color has-background" style="background-color:#0a1c2b;font-size:25px">贝叶斯模型提供了变量选择技术，确保变量选择的可靠性。</p>
+</div></div>
+
+
+
+<div class="wp-container-87 wp-block-columns">
+<div class="wp-container-1 wp-block-column" style="flex-basis:9%"></div>
+
+
+
+<div class="wp-container-85 wp-block-column" style="flex-basis:82%">
+<div class="wp-container-8 wp-block-columns are-vertically-aligned-top">
+<div class="wp-container-2 wp-block-column is-vertically-aligned-top" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-6 wp-block-column is-vertically-aligned-top" style="flex-basis:88%">
+<div style="height:56px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<div class="wp-container-5 wp-block-columns are-vertically-aligned-center floatingslow">
+<div class="wp-container-3 wp-block-column is-vertically-aligned-center">
+<a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e7%94%a8%e8%b4%9d%e5%8f%b6%e6%96%af%e7%ba%bf%e6%80%a7%e5%9b%9e%e5%bd%92%e3%80%81%e8%b4%9d%e5%8f%b6%e6%96%af%e6%a8%a1%e5%9e%8b%e5%b9%b3%e5%9d%87-bma%e6%9d%a5%e9%a2%84%e6%b5%8b/#footer-col1" role="button" tabindex="0" class="at-icon-wrapper at-share-btn at-svc-wechat hvr-float-shadow" style="background-color: rgb(5, 28, 44); border-radius: 0px;"><span class="at-icon-wrapper" style="line-height: 20px; height: 20px; width: 20px;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 26" version="1.1" role="img" aria-labelledby="at-svg-wechat-301" class="at-icon at-icon-wechat" style="fill: rgb(255, 255, 255); width: 30px; height: 25px;"><title id="at-svg-wechat-301">WeChat</title><g><path d="M20.285 12.248c-2.042.107-3.818.727-5.26 2.128-1.457 1.415-2.122 3.15-1.94 5.3-.798-.1-1.525-.208-2.256-.27-.254-.02-.554.01-.767.13-.71.4-1.39.854-2.198 1.36.148-.67.244-1.26.414-1.823.123-.416.066-.647-.316-.917-2.452-1.734-3.485-4.328-2.712-7 .716-2.47 2.473-3.97 4.86-4.75 3.26-1.066 6.92.022 8.902 2.613a6.113 6.113 0 0 1 1.27 3.228zM24.873 25c-.647-.288-1.24-.72-1.87-.787-.63-.066-1.292.298-1.95.365-2.005.205-3.8-.354-5.282-1.726-2.816-2.61-2.414-6.61.845-8.75 2.897-1.9 7.145-1.266 9.187 1.37 1.782 2.302 1.572 5.357-.603 7.29-.63.56-.857 1.02-.453 1.757.074.136.083.308.126.48zM10.886 11.416c.02-.49-.404-.93-.906-.944a.915.915 0 0 0-.952.886.904.904 0 0 0 .895.94.93.93 0 0 0 .963-.882zm4.904-.944c-.504.01-.93.44-.92.93a.92.92 0 0 0 .944.9.903.903 0 0 0 .91-.928.91.91 0 0 0-.934-.902zm1.722 7.39c.412 0 .75-.323.766-.73a.767.767 0 0 0-.76-.794.775.775 0 0 0-.77.79.768.768 0 0 0 .764.734zm4.745-1.523a.762.762 0 0 0-.755.728.75.75 0 0 0 .745.79c.413 0 .74-.313.755-.725a.757.757 0 0 0-.745-.794z" fill-rule="evenodd"></path></g></svg></span></a>
+
+
+<a href="http://shang.qq.com/wpa/qunwpa?idkey=ab419e80c412262af46ce4f0cef1ec63eee84bcce57c81d34055f8ee19dde0d4" role="button" tabindex="0" class="at-icon-wrapper at-share-btn at-svc-tencentqq hvr-float-shadow" style="background-color: rgb(5, 28, 44); border-radius: 0px;"><span class="at-icon-wrapper" style="line-height: 20px; height: 20px; width: 20px;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 26" version="1.1" role="img" aria-labelledby="at-svg-tencentqq-302" class="at-icon at-icon-tencentqq" style="fill: rgb(255, 255, 255); width: 30px; height: 25px;"><title id="at-svg-tencentqq-302">Tencent QQ</title><g><path d="M8.494 14.895c-.066-.155-.098-.368-.098-.638 0-.164.045-.365.135-.602.09-.237.19-.42.295-.552-.008-.18.023-.397.092-.65.07-.255.162-.43.277-.53 0-1.137.378-2.317 1.135-3.54C11.085 7.158 11.975 6.3 13 5.81c1.137-.54 2.463-.81 3.977-.81 1.09 0 2.177.225 3.266.675.4.172.77.37 1.105.59.335.22.626.45.87.687.247.237.472.516.676.835.205.32.377.622.516.908.14.287.272.633.4 1.038.126.405.23.77.312 1.098.082.33.172.73.27 1.205l.012.06c.45.68.676 1.294.676 1.842 0 .115-.037.28-.11.492-.074.21-.11.367-.11.465 0 .008.005.023.017.043a.56.56 0 0 0 .043.06c.016.022.025.036.025.044.63.933 1.123 1.81 1.48 2.634a6.38 6.38 0 0 1 .533 2.56c0 .35-.08.76-.24 1.227-.16.467-.386.7-.68.7a.42.42 0 0 1-.24-.092 1.287 1.287 0 0 1-.233-.214 3.28 3.28 0 0 1-.234-.32c-.085-.13-.15-.24-.195-.325a61.17 61.17 0 0 1-.276-.533c-.01-.008-.022-.012-.038-.012l-.062.05c-.482 1.26-1.023 2.172-1.62 2.737.164.164.415.32.755.473.34.15.622.32.847.51.225.187.37.453.436.797a.816.816 0 0 0-.05.197.462.462 0 0 1-.085.22c-.524.793-1.76 1.19-3.708 1.19-.434 0-.886-.036-1.356-.11-.472-.074-.873-.156-1.204-.246-.332-.09-.76-.212-1.283-.368a4.16 4.16 0 0 0-.283-.086 2.423 2.423 0 0 0-.564-.055 6.403 6.403 0 0 1-.492-.02c-.335.37-.857.636-1.565.8a9.17 9.17 0 0 1-2.07.245c-.286 0-.568-.006-.847-.018-.278-.013-.658-.05-1.14-.11a7.404 7.404 0 0 1-1.24-.253 2.634 2.634 0 0 1-.916-.492c-.266-.22-.4-.483-.4-.785 0-.328.042-.57.124-.73.083-.16.25-.36.504-.596.09-.017.256-.07.497-.16.243-.09.445-.14.61-.147.032 0 .09-.008.17-.025.017-.016.026-.032.026-.05L9.88 23.6c-.392-.09-.834-.522-1.325-1.296-.49-.773-.79-1.414-.896-1.92l-.062-.038c-.033 0-.082.082-.148.246a2.73 2.73 0 0 1-.67.914c-.298.274-.615.428-.95.46h-.013c-.032 0-.057-.018-.073-.055-.017-.036-.037-.058-.062-.066-.188-.442-.282-.85-.282-1.228 0-2.25 1.03-4.158 3.094-5.72z" fill-rule="evenodd"></path></g></svg></span></a>
+
+
+  
+<a href="mailto:contact@tecdat.cn" role="button" tabindex="0" class=" hvr-float-shadow" style="background-color: rgb(5, 28, 44); border-radius: 0px;"><span class="at-icon-wrapper" style="line-height: 20px; height: 20px; width: 20px;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 26" version="1.1" role="img" aria-labelledby="at-svg-tencentqq-302" class="at-icon at-icon-email" style="fill: rgb(255, 255, 255); width: 30px; height: 25px;"><title id="at-svg-tencentqq-302">email</title><g><path d="M27 22.757c0 1.24-.988 2.243-2.19 2.243H7.19C5.98 25 5 23.994 5 22.757V13.67c0-.556.39-.773.855-.496l8.78 5.238c.782.467 1.95.467 2.73 0l8.78-5.238c.472-.28.855-.063.855.495v9.087z"></path><path d="M27 9.243C27 8.006 26.02 7 24.81 7H7.19C5.988 7 5 8.004 5 9.243v.465c0 .554.385 1.232.857 1.514l9.61 5.733c.267.16.8.16 1.067 0l9.61-5.733c.473-.283.856-.96.856-1.514v-.465z"></path></g></svg></span></a>
+  
+  
+  
+  
+  
+<a href="javascript:window.print()" role="button" tabindex="0" class=" hvr-float-shadow" style="background-color: rgb(5, 28, 44); border-radius: 0px;"><span class="at-icon-wrapper" style="line-height: 20px; height: 20px; width: 20px;"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 32 26" version="1.1" role="img" aria-labelledby="at-svg-print-302" class="at-icon at-icon-print" style="fill: rgb(255, 255, 255); width: 30px; height: 25px;"><title id="at-svg-print-302">print</title><g><path d="M24.67 10.62h-2.86V7.49H10.82v3.12H7.95c-.5 0-.9.4-.9.9v7.66h3.77v1.31L15 24.66h6.81v-5.44h3.77v-7.7c-.01-.5-.41-.9-.91-.9zM11.88 8.56h8.86v2.06h-8.86V8.56zm10.98 9.18h-1.05v-2.1h-1.06v7.96H16.4c-1.58 0-.82-3.74-.82-3.74s-3.65.89-3.69-.78v-3.43h-1.06v2.06H9.77v-3.58h13.09v3.61zm.75-4.91c-.4 0-.72-.32-.72-.72s.32-.72.72-.72c.4 0 .72.32.72.72s-.32.72-.72.72zm-4.12 2.96h-6.1v1.06h6.1v-1.06zm-6.11 3.15h6.1v-1.06h-6.1v1.06z"></path></g></svg></span></a>
+</div>
+
+
+
+<div class="wp-container-4 wp-block-column is-vertically-aligned-center">
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<p class="has-text-align-right has-small-font-size">由Kaizong Ye，Coin Ge撰写</p>
+</div>
+</div>
+</div>
+
+
+
+<div class="wp-container-7 wp-block-column is-vertically-aligned-top" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-12 wp-block-columns fadeInAnimated">
+<div class="wp-container-9 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-10 wp-block-column">
+<p style="font-size:26px"><strong>对社会经济因素如何影响收入和工资的研究为应用这些技术提供了充分的机会，同时也为从性别歧视到高等教育的好处等主题提供了洞察力。</strong></p>
+</div>
+
+
+
+<div class="wp-container-11 wp-block-column" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-18 wp-block-columns">
+<div class="wp-container-16 wp-block-column is-vertically-aligned-bottom" style="flex-basis:60%">
+<div class="wp-container-15 wp-block-columns">
+<div class="wp-container-13 wp-block-column" style="flex-basis:10.2%"></div>
+
+
+
+<div class="wp-container-14 wp-block-column" style="flex-basis:66.66%">
+<h1>背景</h1>
+
+
+
+<p><br>下面，贝叶斯信息准则（BIC）和贝叶斯模型平均法被应用于构建一个简明的收入预测模型。</p>
+</div>
+</div>
+</div>
+
+
+
+<div class="wp-container-17 wp-block-column" style="flex-basis:40%">
+<hr class="wp-block-separator has-text-color has-background" style="background-color:#0a1c2b;color:#0a1c2b">
+
+
+
+<p class="has-small-font-size">可下载资源</p>
+
+
+
+<div class="wp-block-button is-style-fill"><a class="wp-block-button__link has-very-light-gray-color has-text-color has-background no-border-radius " href="http://tecdat.cn/%E8%B4%AD%E4%B9%B0%E8%B5%84%E6%BA%9035" style="background-color:#0a1c2b"> <div class="download icon hvr-sink" style="color:#ffffff">         </div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="has-normal-font-size underline-on-hover">完整程序、数据和文档（word）</span>
+ </a></div>
+
+
+
+<p></p>
+</div>
+</div>
+
+
+
+<div class="wp-container-22 wp-block-columns">
+<div class="wp-container-19 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-20 wp-block-column">
+<p>这些数据是从 935 名受访者的随机样本中收集的。该数据集是_计量经济学数据集_系列的一部分 。</p>
+
+
+
+<h1>加载包</h1>
+
+
+
+<p>数据将首先使用该<code class=" prettyprinted" style=""><span class="pln">dplyr</span></code>&nbsp;包进行探索&nbsp;，并使用该<code class=" prettyprinted" style=""><span class="pln">ggplot2</span></code>&nbsp;包进行可视化&nbsp;。稍后，实现逐步贝叶斯线性回归和贝叶斯模型平均 (BMA)。</p>
+
+
+
+<p></p>
+</div>
+
+
+
+<div class="wp-container-21 wp-block-column" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-26 wp-block-columns are-vertically-aligned-center">
+<div class="wp-container-23 wp-block-column is-vertically-aligned-center" style="flex-basis:38%">
+<style>
+body {
+  font-family: "Lato", sans-serif;
+}
+
+.sidepanel  {
+  width: 0;
+  position: fixed;
+  z-index: 1;
+  height: 280px;
+  top: 20%;
+  left: 0;
+  background-color: #F0F0F0;
+  overflow-x: hidden;
+  transition: 0.5s;
+  padding-top: 58px;
+
+}
+
+.sidepanel a {
+  padding: 28px 28px 28px 32px;
+  text-decoration: none;
+  font-size: 15px;
+  color: #000000;
+  display: block;
+  transition: 0.3s;
+}
+
+.sidepanel a:hover {
+  color: #f1f1f1;
+}
+
+.sidepanel .closebtn {
+  position: absolute;
+  top: 0;
+  right: 0px;
+  font-size: 28px;
+}
+
+.openbtn {
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #F0F0F0;
+  color: #051C2C;
+  padding: 10px 28px;
+  border: none;
+  width: 298px;
+}
+
+.openbtn:hover {
+  background-color:#051C2C;
+  color:#fff!important;
+
+}
+</style>
+
+
+
+<div id="mySidepanel" class="sidepanel">
+  <a style="color:black" href="javascript:void(0)" class="closebtn" onclick="closeNav() ">×</a>
+  <a style="color:black">
+
+
+
+
+<section class="_editor">
+    <section class="tool-border">
+        <section></section>
+        <section></section>
+        <section></section>
+        <section></section>
+    </section>
+    <div>
+        <br><br>
+        <div>
+            <blockquote>
+                BMA的基本步骤是：设定待组合模型的先验概率和各个模型中参数的先验分布，然后
+            </blockquote>
+            <p>
+                用经典的贝叶斯方法进行统计推断。早期的理论研究工作包括Min &amp; Zellner<br>(1993)、 Madigan &amp; Raftery (1994)、 Raftery (1995, 1996)、 Draper (1995)、 Reftery,<br>Madigan &amp; Hoeting (1997)、 Clyde (1999) 等； Hoeting, Madigan, Raftery &amp; Volin-<br>sky (1999)和Clyde &amp; George (2004)则对这些工作做了阶段性的总结。随着理论<br>研究的发展，BMA也被广泛应用，比如Fernández, Ley &amp; Steel (2001)和Brock<br>&amp; Durlauf (2001)用BMA方法研究了经济增长理论；Chotikapanich &amp; Griffiths<br>(2005)用BMA估计洛伦茨曲线。关于BMA方法的最新进展见Magnus, Powell &amp;<br>Prüfer (2010)。 该文基于Laplace先验分布提出了WALS(Weighted Average Least<br>Squares)模型平均方法。Wan &amp; Zhang (2009)将WALS方法应用于旅游业研究<br>中； Magnus, Wan &amp; Zhang (2010)则将WALS方法推广到异方差的情形。<br>尽管BMA方法已经得到了长足的发展，但是它存在一些严重的问题。其一<br>是如何确定各个模型的先验概率， 因为不同的先验概率一般对BMA方法的结果<br>影响较大；其二是使用BMA方法时可能针对待估计参数混合一些矛盾的先验，<br>导致直观上难以解释(Hjort &amp; Claeskens 2003)；其三是BMA一般要求真实的模<br>型在所考虑的一类模型之中，然而实际中真实的模型一般会更加复杂(Hansen.2008)
+            </p><br>
+        </div>
+    </div>
+    <p></p>
+</section>
+<section class="_editor">
+    <p>
+        <br>
+    </p>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  </a>
+
+</div>
+
+<button class="openbtn" onclick="openNav()">
+<p class="has-text-align-left has-small-font-size">侧边栏         <span class="hvr-forward has-normal-font-size "><strong> 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;►</strong></span></p>
+<p class="has-text-align-left has-medium-font-size"><strong>怎样理解贝叶斯模型平均（Bayes model averaging）？</strong></p>
+</button>  
+
+
+<script>
+function openNav() {
+  document.getElementById("mySidepanel").style.width = "380px";
+}
+
+function closeNav() {
+  document.getElementById("mySidepanel").style.width = "0";
+}
+</script>
+
+
+
+<div style="height:26px" aria-hidden="true" class="wp-block-spacer"></div>
+</div>
+
+
+
+<div class="wp-container-24 wp-block-column is-vertically-aligned-center">
+<h1>数据</h1>
+
+
+
+<p>数据集网页提供了以下变量描述表：</p>
+
+
+
+<p class="has-normal-font-size"></p>
+</div>
+
+
+
+<div class="wp-container-25 wp-block-column is-vertically-aligned-center" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-30 wp-block-columns">
+<div class="wp-container-27 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-28 wp-block-column">
+<figure class="wp-block-table"><table><thead><tr><th>变量</th><th>描述</th></tr></thead><tbody><tr><td><code class=" prettyprinted" style=""><span class="pln">wage</span></code></td><td>每周收入（元）</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">hours</span></code></td><td>每周平均工作时间</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">IQ</span></code></td><td>智商分数</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">kww</span></code></td><td>对世界工作的了解得分</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">educ</span></code></td><td>受教育年数</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">exper</span></code></td><td>多年工作经验</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">tenure</span></code></td><td>在现任雇主工作的年数</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">age</span></code></td><td>年龄</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">married</span></code></td><td>=1 如果已婚</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">black</span></code></td><td>=1 如果是黑人</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">south</span></code></td><td>=1 如果住在南方</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">urban</span></code></td><td>=1 如果居住在都市</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">sibs</span></code></td><td>兄弟姐妹的数量</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">brthord</span></code></td><td>出生顺序</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">meduc</span></code></td><td>母亲的教育（年）</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">feduc</span></code></td><td>父亲的教育（年）</td></tr><tr><td><code class=" prettyprinted" style=""><span class="pln">lwage</span></code></td><td>工资自然对数&nbsp;<code class=" prettyprinted" style=""><span class="pln">wage</span></code></td></tr></tbody></table></figure>
+
+
+
+<p></p>
+</div>
+
+
+
+<div class="wp-container-29 wp-block-column" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-34 wp-block-columns are-vertically-aligned-center">
+<div class="wp-container-31 wp-block-column is-vertically-aligned-center" style="flex-basis:28%">
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<hr class="wp-block-separator has-text-color has-background is-style-default" style="background-color:#051c2c;color:#051c2c">
+
+
+
+<iframe src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/player.html" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"> </iframe>
+
+
+
+<div style="height:1px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<p class="has-text-align-left has-small-font-size">视频</p>
+
+
+
+<p class="has-text-align-left has-medium-font-size">贝叶斯推断线性回归与R语言预测工人工资数据</p>
+
+
+
+<p><a href="http://tecdat.cn/?p=24141">探索见解           <span class="hvr-forward" style="color:#f33f3f">➜</span></a></p>
+
+
+
+<p><a href="https://www.bilibili.com/video/BV1Qu411y7WE/">去bilibili观看           <span class="hvr-forward" style="color:#f33f3f">➜</span></a></p>
+
+
+
+<p><a href="http://tecdat.cn/%e6%8b%93%e7%ab%af%e7%89%b9%e8%89%b2%e8%af%be%e7%a8%8b/">探索更多视频           <span class="hvr-forward" style="color:#f33f3f">➜</span></a></p>
+
+
+
+<p></p>
+</div>
+
+
+
+<div class="wp-container-32 wp-block-column is-vertically-aligned-center">
+<h1>探索数据</h1>
+
+
+
+<p>与任何新数据集一样，一个好的起点是标准的探索性数据分析。汇总表是简单的第一步。</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;数据集中所有变量的汇总表--包括连续变量和分类变量</span><span class="pln">
+summary</span><span class="pun">(</span><span class="pln">wage</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/a6d90f7ad1354cea9c0fcea9e0e5ec41.png" alt="" title=""></figure>
+</div>
+
+
+
+<div class="wp-container-33 wp-block-column is-vertically-aligned-center" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-38 wp-block-columns">
+<div class="wp-container-35 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-36 wp-block-column">
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/206f9cc566ca487a8a14317647de22cd.png" alt="" title=""></figure>
+
+
+
+<p>因变量（工资）的直方图给出了合理预测应该是什么样子的。</p>
+</div>
+
+
+
+<div class="wp-container-37 wp-block-column" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-45 wp-block-columns">
+<div class="wp-container-39 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-44 wp-block-column" style="flex-basis:94%">
+<div class="wp-container-43 wp-block-columns">
+<div class="wp-container-40 wp-block-column" style="flex-basis:66.66%">
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#工资数据的简单柱状图</span><span class="pln">
+hst</span><span class="pun">(</span><span class="pln">wge$wae</span><span class="pun">,</span><span class="pln">&nbsp;breks&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="lit">30</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/2dcedea1036c42caa6c8f4e78c9c4ee2.png" alt="" title=""></figure>
+</div>
+
+
+
+<div class="wp-container-42 wp-block-column" style="flex-basis:33.33%">
+<hr class="wp-block-separator has-text-color has-background" style="background-color:#0a1c2b;color:#0a1c2b">
+
+
+
+<div class="wp-container-41 wp-block-group"><div class="wp-block-group__inner-container">
+<p class="has-small-font-size">最受欢迎的见解</p>
+
+
+
+<p class="has-small-font-size">1.<a href="http://tecdat.cn/matlab%e4%bd%bf%e7%94%a8%e8%b4%9d%e5%8f%b6%e6%96%af%e4%bc%98%e5%8c%96%e7%9a%84%e6%b7%b1%e5%ba%a6%e5%ad%a6%e4%b9%a0/" target="_blank" rel="noreferrer noopener">matlab使用贝叶斯优化的深度学习</a></p>
+
+
+
+<p class="has-small-font-size">2.<a href="http://tecdat.cn/matlab%e8%b4%9d%e5%8f%b6%e6%96%af%e9%9a%90%e9%a9%ac%e5%b0%94%e5%8f%af%e5%a4%abhmm%e6%a8%a1%e5%9e%8b%e5%ae%9e%e7%8e%b0/" target="_blank" rel="noreferrer noopener">matlab贝叶斯隐马尔可夫hmm模型实现</a></p>
+
+
+
+<p class="has-small-font-size">3.<a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80gibbs%e6%8a%bd%e6%a0%b7%e7%9a%84%e8%b4%9d%e5%8f%b6%e6%96%af%e7%ae%80%e5%8d%95%e7%ba%bf%e6%80%a7%e5%9b%9e%e5%bd%92%e4%bb%bf%e7%9c%9f%e5%88%86%e6%9e%90/" target="_blank" rel="noreferrer noopener">R语言Gibbs抽样的贝叶斯简单线性回归仿真</a></p>
+
+
+
+<p class="has-small-font-size">4.<a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e4%b8%ad%e7%9a%84block-gibbs%e5%90%89%e5%b8%83%e6%96%af%e9%87%87%e6%a0%b7%e8%b4%9d%e5%8f%b6%e6%96%af%e5%a4%9a%e5%85%83%e7%ba%bf%e6%80%a7%e5%9b%9e%e5%bd%92/" target="_blank" rel="noreferrer noopener">R语言中的block Gibbs吉布斯采样贝叶斯多元线性回归</a></p>
+
+
+
+<p class="has-small-font-size">5.<a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e4%b8%ad%e7%9a%84stan%e6%a6%82%e7%8e%87%e7%bc%96%e7%a8%8bmcmc%e9%87%87%e6%a0%b7%e7%9a%84%e8%b4%9d%e5%8f%b6%e6%96%af%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noreferrer noopener">R语言中的Stan概率编程MCMC采样的贝叶斯模型</a></p>
+
+
+
+<p class="has-small-font-size">6.<a href="http://tecdat.cn/python%e7%94%a8pymc3%e5%ae%9e%e7%8e%b0%e8%b4%9d%e5%8f%b6%e6%96%af%e7%ba%bf%e6%80%a7%e5%9b%9e%e5%bd%92%e6%a8%a1%e5%9e%8b/" target="_blank" rel="noreferrer noopener">Python用PyMC3实现贝叶斯线性回归模型</a></p>
+
+
+
+<p class="has-small-font-size">7.<a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e4%bd%bf%e7%94%a8%e8%b4%9d%e5%8f%b6%e6%96%af%e5%b1%82%e6%ac%a1%e6%a8%a1%e5%9e%8b%e8%bf%9b%e8%a1%8c%e7%a9%ba%e9%97%b4%e6%95%b0%e6%8d%ae%e5%88%86%e6%9e%90/" target="_blank" rel="noreferrer noopener">R语言使用贝叶斯 层次模型进行空间数据分析</a></p>
+
+
+
+<p class="has-small-font-size">8.<a href="http://tecdat.cn/%e9%9a%8f%e6%9c%ba%e6%90%9c%e7%b4%a2%e5%8f%98%e9%87%8f%e9%80%89%e6%8b%a9ssvs%e4%bc%b0%e8%ae%a1%e8%b4%9d%e5%8f%b6%e6%96%af%e5%90%91%e9%87%8f%e8%87%aa%e5%9b%9e%e5%bd%92%ef%bc%88bvar%ef%bc%89%e6%a8%a1/" target="_blank" rel="noreferrer noopener">R语言随机搜索变量选择SSVS估计贝叶斯向量自回归（BVAR）模型</a></p>
+</div></div>
+
+
+
+<p class="has-small-font-size">9.<a href="http://tecdat.cn/matlab%e8%b4%9d%e5%8f%b6%e6%96%af%e9%9a%90%e9%a9%ac%e5%b0%94%e5%8f%af%e5%a4%abhmm%e6%a8%a1%e5%9e%8b%e5%ae%9e%e7%8e%b0/" target="_blank" rel="noreferrer noopener">matlab贝叶斯隐马尔可夫hmm模型实现</a></p>
+</div>
+</div>
+</div>
+</div>
+
+
+
+<div class="wp-container-49 wp-block-columns">
+<div class="wp-container-46 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-47 wp-block-column">
+<p>直方图还可用于大致了解哪些地方不太可能出现结果。</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;检查图表&nbsp;"尾部&nbsp;"的点的数量</span><span class="pln">
+sm</span><span class="pun">(</span><span class="pln">wage$ge&nbsp;</span><span class="pun">&lt;</span><span class="pln">&nbsp;</span><span class="lit">300</span><span class="pun">)</span></pre>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">##&nbsp;\[1\]&nbsp;6</span></pre>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="pln">sm</span><span class="pun">(</span><span class="pln">wae$wge&nbsp;</span><span class="pun">&gt;</span><span class="pln">&nbsp;</span><span class="lit">2000</span><span class="pun">)</span></pre>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">##&nbsp;\[1\]&nbsp;20</span></pre>
+
+
+
+<h1>简单线性回归</h1>
+
+
+
+<p>由于周工资（’wage’）是该分析中的因变量，我们想探索其他变量作为预测变量的关系。我们在数据中看到的工资变化的一种可能的、简单的解释是更聪明的人赚更多的钱。下图显示了每周工资和 IQ 分数之间的散点图。</p>
+</div>
+
+
+
+<div class="wp-container-48 wp-block-column" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-56 wp-block-columns">
+<div class="wp-container-50 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-54 wp-block-column" style="flex-basis:88%">
+<hr class="wp-block-separator has-text-color has-background" style="background-color:#d0d0d0;color:#d0d0d0">
+
+
+
+<div class="wp-container-53 wp-block-columns">
+<div class="wp-container-51 wp-block-column is-vertically-aligned-top" style="flex-basis:33.33%">
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/2021040716332526.jpg" alt=""></figure>
+</div>
+
+
+
+<div class="wp-container-52 wp-block-column is-vertically-aligned-center" style="flex-basis:66.66%">
+<h1 style="font-size:35px"><strong>R语言和Stan,JAGS：用rstan,rjags建立贝叶斯多元线性回归预测选举数据</strong></h1>
+
+
+
+<p><strong><a href="http://tecdat.cn/?p=21978"><span style="color:#000000">阅读文章  </span></a></strong><span style="color:#f33f3f" class="has-inline-color"><a class="hvr-forward" style="color:#f33f3f" href="http://tecdat.cn/?p=21978">   ➜</a></span></p>
+</div>
+</div>
+
+
+
+<hr class="wp-block-separator has-text-color has-background" style="background-color:#d0d0d0;color:#d0d0d0">
+</div>
+
+
+
+<div class="wp-container-55 wp-block-column" style="flex-basis:1.6%"></div>
+</div>
+
+
+
+<div class="wp-container-60 wp-block-columns">
+<div class="wp-container-57 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-58 wp-block-column">
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="pln">gplot</span><span class="pun">(</span><span class="pln">wae</span><span class="pun">,</span><span class="pln">&nbsp;es</span><span class="pun">(</span><span class="pln">iq</span><span class="pun">,</span><span class="pln">&nbsp;wge</span><span class="pun">))</span><span class="pln">&nbsp;</span><span class="pun">+</span><span class="pln">&nbsp;gom\_oint</span><span class="pun">()</span><span class="pln">&nbsp;</span><span class="pun">+</span><span class="pln">gom\_smoth</span><span class="pun">()</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/9ec63bb2803b4c589a18f078746589a1.png" alt="" title=""></figure>
+
+
+
+<p>IQ 分数和工资之间似乎存在轻微的正线性关系，但仅靠 IQ 并不能可靠地预测工资。尽管如此，这种关系可以通过拟合一个简单的线性回归来量化，它给出：</p>
+</div>
+
+
+
+<div class="wp-container-59 wp-block-column" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-64 wp-block-columns are-vertically-aligned-center">
+<div class="wp-container-61 wp-block-column is-vertically-aligned-center" style="flex-basis:28%">
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<p></p>
+
+
+
+<hr class="wp-block-separator has-text-color has-background" style="background-color:#d0d0d0;color:#d0d0d0">
+
+
+
+<div style="height:19px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<h3><strong>随时关注您喜欢的主题</strong></h3>
+
+
+
+<div style="height:12px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<style>
+.openbtnsubscribe {
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #d84548;
+  color: #fff;
+  border:1px solid #d84548;
+  width: 188px;
+height:58px;
+text-align:center;
+ padding: 16px;
+}
+
+.openbtnsubscribe:hover {
+  background-color:#fff;
+  color:#d84548;
+
+}
+</style>
+<button href="#footer-col1" class="openbtnsubscribe hvr-float-shadow" onclick="location.href=&#39;#footer-col1&#39;">
+<p class=" has-normal-font-size"><strong>订阅公众号</strong></p>
+
+</button>
+
+
+
+<div style="height:26px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<hr class="wp-block-separator has-text-color has-background" style="background-color:#d0d0d0;color:#d0d0d0">
+
+
+
+<p></p>
+</div>
+
+
+
+<div class="wp-container-62 wp-block-column is-vertically-aligned-center">
+<p>工资 i = α + β⋅iqi + ϵiwagei = α + β⋅iqi + ϵi</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="pln">m\_wg\_iq&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;lm</span><span class="pun">(</span><span class="pln">wge&nbsp;</span><span class="pun">~</span><span class="pln">&nbsp;iq</span><span class="pun">,</span><span class="pln">&nbsp;dta&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;age</span><span class="pun">)</span><span class="pln">
+coefients</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/8c4141bb59a445bcba3c09ea40240bb0.png" alt="" title=""></figure>
+
+
+
+<p>工资 i = 116.99 + 8.3 ⋅iqi + ϵiwagei = 116.99 + 8.3 ⋅iqi + ϵi</p>
+
+
+
+<p>在转向贝叶斯改进这个模型之前，请注意贝叶斯建模假设误差 (ϵi) 以恒定方差正态分布。通过检查模型的残差分布来检查该假设。如果残差高度非正态或偏斜，则违反假设并且任何后续推论都无效。要检查假设，请按如下方式绘制残差：</p>
+</div>
+
+
+
+<div class="wp-container-63 wp-block-column is-vertically-aligned-center" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-68 wp-block-columns">
+<div class="wp-container-65 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-66 wp-block-column">
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;用散点图和模型误差残差的直方图来检查正态性假设</span><span class="pln">
+
+glot</span><span class="pun">(</span><span class="pln">dta&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;mwag_q</span><span class="pun">,</span><span class="pln">&nbsp;es</span><span class="pun">(</span><span class="pln">x&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="pln">ite</span><span class="pun">,</span><span class="pln">&nbsp;y&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="pln">rd</span><span class="pun">))</span><span class="pln">&nbsp;</span><span class="pun">+</span><span class="pln">
+&nbsp;&nbsp;gemittr</span><span class="pun">()</span><span class="pln">&nbsp;</span><span class="pun">+</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/73b551dd273c4610a2548b042ee0d610.png" alt="" title=""></figure>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="pln">plot</span><span class="pun">(</span><span class="pln">dta&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;m\_g\_iq</span><span class="pun">,</span><span class="pln">&nbsp;aes</span><span class="pun">(</span><span class="pln">x&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="pln">reid</span><span class="pun">))</span><span class="pln">&nbsp;</span><span class="pun">+</span><span class="pln">
+&nbsp;&nbsp;histgm</span><span class="pun">(</span><span class="pln">bnwth&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="lit">10</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/4643bc52fa8c4db5848ed106061307a9.png" alt="" title=""></figure>
+
+
+
+<h1>变量变换</h1>
+
+
+
+<p>两个图都显示残差是右偏的。因此，IQ（因为它目前存在于数据集中）不应用作贝叶斯预测模型。但是，对&nbsp;仅具有正值的偏斜_因_变量使用（自然）对数变换&nbsp;通常可以解决问题。</p>
+</div>
+
+
+
+<div class="wp-container-67 wp-block-column" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-72 wp-block-columns inline-photo show-on-scroll">
+<div class="wp-container-69 wp-block-column" style="flex-basis:1.6%"></div>
+
+
+
+<div class="wp-container-70 wp-block-column" style="flex-basis:96.8%">
+<div style="height:23px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<h1 class="has-text-color" style="color:#d84548"><strong>下面，该模型使用转换后的工资变量进行了重新拟合。</strong></h1>
+
+
+
+<div style="height:50px" aria-hidden="true" class="wp-block-spacer"></div>
+</div>
+
+
+
+<div class="wp-container-71 wp-block-column" style="flex-basis:1.6%"></div>
+</div>
+
+
+
+<div class="wp-container-76 wp-block-columns">
+<div class="wp-container-73 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-74 wp-block-column" style="flex-basis:88%">
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;用IQ的自然对数拟合th模型</span><span class="pln">
+lm</span><span class="pun">(</span><span class="pln">lage&nbsp;</span><span class="pun">~</span><span class="pln">&nbsp;iq</span><span class="pun">,</span><span class="pln">&nbsp;data&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;wae</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/e1b9f6a4335e451d81bd07e9796c8e87.png" alt="" title=""></figure>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;残差sctterplot和转换后数据的柱状图</span><span class="pln">
+plt</span><span class="pun">(</span><span class="pln">data&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;m\_lag\_iq</span><span class="pun">,</span><span class="pln">&nbsp;es</span><span class="pun">(</span><span class="pln">x&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="pln">fited</span><span class="pun">,</span><span class="pln">&nbsp;y&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="pln">reid</span><span class="pun">))</span><span class="pln">&nbsp;
+&nbsp;&nbsp;geiter</span><span class="pun">()</span><span class="pln">&nbsp;</span><span class="pun">+</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/f3ce2d7b3d48420cba0686fc44a39c11.png" alt="" title=""></figure>
+</div>
+
+
+
+<div class="wp-container-75 wp-block-column" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-80 wp-block-columns are-vertically-aligned-center">
+<div class="wp-container-77 wp-block-column is-vertically-aligned-center" style="flex-basis:28%">
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<h1 class="inline-photo show-on-scroll has-text-color" style="color:#d84548"><strong>残差确实大致呈正态分布。</strong></h1>
+
+
+
+<p></p>
+</div>
+
+
+
+<div class="wp-container-78 wp-block-column is-vertically-aligned-center">
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="pln">ggpot</span><span class="pun">(</span><span class="pln">dta&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;m_lwgeiq</span><span class="pun">,</span><span class="pln">&nbsp;</span><span class="kwd">as</span><span class="pun">(</span><span class="pln">x&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="pln">resd</span><span class="pun">))</span><span class="pln">&nbsp;</span><span class="pun">+</span><span class="pln">
+&nbsp;&nbsp;gostgam</span><span class="pun">(</span><span class="pln">binwth&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="lit">1</span><span class="pun">)</span><span class="pln">&nbsp;</span><span class="pun">+</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/2785a74b37ad48308594f07878b32509.png" alt="" title=""></figure>
+</div>
+
+
+
+<div class="wp-container-79 wp-block-column is-vertically-aligned-center" style="flex-basis:6%"></div>
+</div>
+
+
+
+<div class="wp-container-84 wp-block-columns">
+<div class="wp-container-81 wp-block-column" style="flex-basis:6%"></div>
+
+
+
+<div class="wp-container-82 wp-block-column">
+<p>然而，由此产生的 IQ 系数非常小（只有 0.0088），这是可以预料的，因为 IQ 分数提高 1 分几乎不会对工资产生太大影响。需要进一步细化。数据集包含更多信息。</p>
+
+
+
+<p></p>
+
+
+
+<h1>多元线性回归和 BIC</h1>
+
+
+
+<p>我们可以首先在回归模型中包含所有潜在的解释变量，来粗略地尝试解释尽可能多的工资变化。</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;对数据集中的所有变量运行一个线性模型，使用'.'约定。</span><span class="pln">
+full&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;lm</span><span class="pun">(</span><span class="pln">lwge&nbsp;</span><span class="pun">~</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="pln">&nbsp;</span><span class="pun">-</span><span class="pln">&nbsp;wage</span><span class="pun">,</span><span class="pln">&nbsp;dta&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;wge</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/3a22c13fc39b4f129d8962ae3194710c.png" alt="" title=""></figure>
+
+
+
+<p>完整线性模型的上述总结表明，自变量的许多系数在统计上并不显着（请参阅第 4 个数字列中的 p 值）。选择模型变量的一种方法是使用贝叶斯信息准则 (BIC)。BIC 是模型拟合的数值评估，它也会按样本大小的比例惩罚更多的参数。这是完整线性模型的 BIC：</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="pln">BIC</span><span class="pun">(</span><span class="pln">full</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/fedf53a4da5943d8bddf6fcc96654298.png" alt="" title=""></figure>
+
+
+
+<p>BIC 值越小表示拟合越好。因此，BIC 可以针对各种缩减模型进行计算，然后与完整模型 BIC 进行比较，以找到适合工资预测工作的最佳模型。当然，R 有一个功能可以系统地执行这些 BIC 调整。</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;用step计算模型</span><span class="pln">
+pIC</span><span class="pun">(</span><span class="pln">lwge&nbsp;</span><span class="pun">~</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="pln">&nbsp;</span><span class="pun">-</span><span class="pln">&nbsp;wge</span><span class="pun">,</span><span class="pln">&nbsp;dta&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;na</span><span class="pun">.</span><span class="pln">oi</span><span class="pun">(</span><span class="pln">wge</span><span class="pun">))</span><span class="pln">lg</span><span class="pun">(</span><span class="pln">lgth</span><span class="pun">(</span><span class="pln">na</span><span class="pun">.</span><span class="pln">mit</span><span class="pun">(</span><span class="pln">wge</span><span class="pun">))))</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/ab822a7798cb4f9287737a91beb6683e.png" alt="" title=""></figure>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;显示逐步模型的BIC</span><span class="pln">
+BIC</span><span class="pun">(</span><span class="pln">se_mol</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/98af9e09f91a4b78877a0e0efa6fde0d.png" alt="" title=""></figure>
+
+
+
+<p>调用 step找到产生最低 BIC 的变量组合，并提供它们的系数。很不错。</p>
+
+
+
+<h1>贝叶斯模型平均（BMA）</h1>
+
+
+
+<p>即使BIC处于最低值，我们能有多大把握确定所得到的模型是真正的 “最佳拟合”？答案很可能取决于基础数据的规模和稳定性。在这些不确定的时候，贝叶斯模型平均化（BMA）是有帮助的。BMA对多个模型进行平均化，获得系数的后验值和新数据的预测值。下面，BMA被应用于工资数据（排除NA值后）。</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;不包括NA</span><span class="pln">
+a_ona&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;na</span><span class="pun">.</span><span class="pln">omt</span><span class="pun">(</span><span class="pln">wae</span><span class="pun">)</span><span class="pln">
+
+</span><span class="com">#&nbsp;运行BMA，指定BIC作为判断结果模型的标准</span><span class="pln">
+BMA</span><span class="pun">(</span><span class="pln">wge&nbsp;</span><span class="pun">~</span><span class="pln">&nbsp;</span><span class="pun">.</span><span class="pln">&nbsp;</span><span class="pun">-</span><span class="pln">wge</span><span class="pun">,</span><span class="pln">&nbsp;daa</span><span class="pun">=</span><span class="pln">&nbsp;ae\_o\_a</span><span class="pun">,</span><span class="pln">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pror&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="str">"BIC"</span><span class="pun">,</span><span class="pln">&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;moepor&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;ufom</span><span class="pun">())</span><span class="pln">
+
+</span><span class="com">#&nbsp;显示结果</span><span class="pln">
+summary</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/2d6135febbbd4e298c417b865a96a54d.png" alt="" title=""></figure>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/216b3a6231444865a8891630ffbca0d0.png" alt="" title=""></figure>
+
+
+
+<p>结果表显示了五个最有可能的模型，以及每个系数被包含在真实模型中的概率。我们看到，出生顺序和是否有兄弟姐妹是最不可能被包含的变量，而教育和智商变量则被锁定。BMA模型的排名也可以用图像图来显示，它清楚地显示哪些变量在所有模型中，哪些变量被排除在所有模型之外，以及那些介于两者之间的变量。</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="pln">ge</span><span class="pun">(</span><span class="pln">b_lge</span><span class="pun">,</span><span class="pln">&nbsp;tp</span><span class="pun">.</span><span class="pln">oels</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/e91b3c601b2c4e60bd15b79ab8d1dcc8.png" alt="" title=""></figure>
+
+
+
+<p>我们还可以提供模型系数的95%置信区间。下面的结果支持了关于包括或排除系数的决定。例如，在区间包含零，有大量证据支持排除该变量。</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="pln">confint</span><span class="pun">(</span><span class="pln">ceflae</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/6334c4bece6246bea53708b3a125771a.png" alt="" title=""></figure>
+
+
+
+<h1>进行预测</h1>
+
+
+
+<p>构建模型后，pediction 只是插入数据的问题：</p>
+
+
+
+<pre class="wp-block-preformatted prettyprinted" style=""><span class="com">#&nbsp;用一个虚构的工人的统计资料来预测数据的例子</span><span class="pln">
+
+</span><span class="com">#&nbsp;进行预测</span><span class="pln">
+redict&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;pedct</span><span class="pun">(</span><span class="pln">e_odl</span><span class="pun">,</span><span class="pln">&nbsp;newdt&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;wrkr</span><span class="pun">,</span><span class="pln">eitr&nbsp;</span><span class="pun">=</span><span class="pln">&nbsp;</span><span class="str">"BMA"</span><span class="pun">)</span><span class="pln">
+
+</span><span class="com">#&nbsp;将结果转换为元</span><span class="pln">
+exp</span><span class="pun">(</span><span class="pln">wk_pedct</span><span class="pun">)</span></pre>
+
+
+
+<figure class="wp-block-image"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/663adfc3d81048fea58c6ca6deb0f98c.png" alt="" title=""></figure>
+
+
+
+<p>预计这名化妆工作人员的周薪为 745 元。这到底有多准确？你得问她，但我们对我们的变量选择很有信心，并对现有的数据尽了最大努力。应用的贝叶斯技术使我们对结果有信心。</p>
+</div>
+
+
+
+<div class="wp-container-83 wp-block-column" style="flex-basis:6%"></div>
+</div>
+
+
+
+<p></p>
+</div>
+
+
+
+<div class="wp-container-86 wp-block-column" style="flex-basis:9%"></div>
+</div>
+
+
+
+<div class="wp-container-95 wp-block-group"><div class="wp-block-group__inner-container">
+<div class="wp-container-94 wp-block-columns">
+<div class="wp-container-88 wp-block-column" style="flex-basis:18%"></div>
+
+
+
+<div class="wp-container-92 wp-block-column" style="flex-basis:82%">
+<hr class="wp-block-separator has-text-color has-background has-black-background-color has-black-color">
+
+
+
+<p class="has-text-align-left"><strong>可下载资源</strong></p>
+
+
+
+<style>
+.openbtndowl {
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #FFFFFF;
+  color: #051C2C;
+  border:1px solid #051C2C;
+  width: 268px;
+height:58px;
+text-align:center;
+ padding: 16px;
+}
+
+.openbtndowl:hover {
+  background-color:#051C2C;
+  color:#fff;
+
+}
+</style>
+<button href="http://tecdat.cn/?p=15301" class="openbtndowl hvr-float-shadow" onclick="location.href=&#39;http://tecdat.cn/购买资源35/&#39;">
+<p class=" has-normal-font-size"><strong>完整代码、数据和文档（word）</strong>        </p>
+
+</button>
+
+
+
+<div style="height:38px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<p><strong>关于作者</strong></p>
+
+
+
+<p><strong><a href="http://tecdat.cn/%e5%85%b3%e4%ba%8e%e6%88%91%e4%bb%ac/">Kaizong Ye</a></strong>是<a href="http://tecdat.cn/%e5%85%b3%e4%ba%8e%e6%88%91%e4%bb%ac/"><strong>拓端研究室（TRL）</strong></a>的研究员。</p>
+
+
+
+<p>本文借鉴了作者最近为《<strong><a href="https://study.163.com/course/courseMain.htm?courseId=1003776041&amp;share=2&amp;shareId=1023497288">R语言数据分析挖掘必知必会</a></strong> 》课堂做的准备。 </p>
+
+
+
+<div style="height:20px" aria-hidden="true" class="wp-block-spacer"></div>
+
+
+
+<div class="wp-container-91 wp-block-columns">
+<div class="wp-container-89 wp-block-column is-vertically-aligned-center" style="flex-basis:58%">
+<p>​非常感谢您阅读本文，如需帮助请联系我们！</p>
+
+
+
+<p></p>
+</div>
+
+
+
+<div class="wp-container-90 wp-block-column is-vertically-aligned-center" style="flex-basis:38%">
+<style>
+.openbtncon {
+  font-size: 16px;
+  cursor: pointer;
+  background-color: #FFFFFF;
+  color: #051C2C;
+  border:1px solid #051C2C;
+  width: 138px;
+height:58px;
+text-align:center;
+ padding: 16px;
+}
+
+.openbtncon:hover {
+  background-color:#051C2C;
+  color:#fff;
+
+}
+</style>
+<button href="http://tecdat.cn/?p=15301" class="openbtncon hvr-float-shadow" onclick="location.href=&#39;http://wpa.qq.com/msgrd?v=3&amp;uin=3230046374&amp;site=qq&amp;menu=yes&#39;">
+<p class=" has-normal-font-size"><strong>联系我们  ✉</strong>        </p>
+
+</button>
+</div>
+</div>
+
+
+
+<p></p>
+</div>
+
+
+
+<div class="wp-container-93 wp-block-column" style="flex-basis:18%"></div>
+</div>
+</div></div>
+		</div><!-- .entry-content -->
+
+				
+		</article>
+
+
+
+
+
+<div id="relatedposts"><h3>相关文章</h3><ul>  
+<li><div class="relatedthumb hvr-glow"><a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e5%a4%9a%e5%85%83%e7%ba%bf%e6%80%a7%e5%9b%9e%e5%bd%92%e3%80%81arima%e5%88%86%e6%9e%90%e7%be%8e%e5%9b%bd%e4%b8%8d%e5%90%8c%e5%80%99%e9%80%89%e4%ba%ba%e5%af%b9%e7%bb%8f%e6%b5%8egdp/" rel="bookmark" title="R语言多元线性回归、ARIMA分析美国不同候选人对经济GDP时间序列影响"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/20200707160148711.jpg" width="258" height="110" alt="R语言多元线性回归、ARIMA分析美国不同候选人对经济GDP时间序列影响">R语言多元线性回归、ARIMA分析美国不同候选人对经济GDP时间序列影响</a></div></li>
+  
+  
+<li><div class="relatedthumb hvr-glow"><a href="http://tecdat.cn/matlab%e7%94%a8%e5%9b%9e%e5%bd%92%e3%80%81seird%e6%a8%a1%e5%9e%8b%e3%80%81%e8%81%9a%e7%b1%bb%e9%a2%84%e6%b5%8b%e7%be%8e%e5%9b%bd%e6%80%bb%e7%bb%9f%e5%a4%a7%e9%80%89%e3%80%81%e6%96%b0%e5%86%a0%e7%96%ab/" rel="bookmark" title="Matlab用回归、SEIRD模型、聚类预测美国总统大选、新冠疫情对中美经济的影响"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/20200703131746180.jpg" width="258" height="110" alt="Matlab用回归、SEIRD模型、聚类预测美国总统大选、新冠疫情对中美经济的影响">Matlab用回归、SEIRD模型、聚类预测美国总统大选、新冠疫情对中美经济的影响</a></div></li>
+  
+  
+<li><div class="relatedthumb hvr-glow"><a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e5%af%b9airbnb%e6%95%b0%e6%8d%aenlp%e6%96%87%e6%9c%ac%e6%8c%96%e6%8e%98%e3%80%81%e8%af%8d%e4%ba%91%e5%8f%af%e8%a7%86%e5%8c%96%e3%80%81%e5%9b%9e%e5%bd%92gam%e6%a8%a1%e5%9e%8b/" rel="bookmark" title="R语言对airbnb数据nlp文本挖掘、词云可视化、回归GAM模型、交叉验证分析"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/20200622135111103.jpg" width="258" height="110" alt="R语言对airbnb数据nlp文本挖掘、词云可视化、回归GAM模型、交叉验证分析">R语言对airbnb数据nlp文本挖掘、词云可视化、回归GAM模型、交叉验证分析</a></div></li>
+  
+  
+<li><div class="relatedthumb hvr-glow"><a href="http://tecdat.cn/r%e8%af%ad%e8%a8%80%e4%bd%bf%e7%94%a8%e9%80%bb%e8%be%91%e5%9b%9e%e5%bd%92logistic%e3%80%81%e5%8d%95%e5%9b%a0%e7%b4%a0%e6%96%b9%e5%b7%ae%e5%88%86%e6%9e%90anova%e5%92%8c%e6%95%b0%e6%8d%ae%e5%8f%af/" rel="bookmark" title="R语言使用逻辑回归Logistic、单因素方差分析anova和数据可视化分类iris鸢尾花数据集"><img src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/20200708131927907.jpg" width="258" height="110" alt="R语言使用逻辑回归Logistic、单因素方差分析anova和数据可视化分类iris鸢尾花数据集">R语言使用逻辑回归Logistic、单因素方差分析anova和数据可视化分类iris鸢尾花数据集</a></div></li>
+  
+</ul>
+
+				
+
+			
+
+		</div><!-- #main-core -->
+		</div><!-- #main -->
+			</div>
+	</div><!-- #content -->
+
+	<footer>
+		<div id="footer"><div id="footer-core" class="option1"><div id="footer-col1" class="widget-area"><aside class="widget widget_block"><div class="wp-block-columns" style="
+    margin-top: 428px;
+"><p></p>
+<div class="wp-block-column">
+<div class="wp-block-spacer" style="height: 68px;" aria-hidden="true"></div>
+<div class="wp-block-image">
+<figure class="alignleft is-resized"><img loading="lazy" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/logo-1.png" alt="" width="80" height="62"></figure>
+</div>
+<div style="height:56px" aria-hidden="true" class="wp-block-spacer"></div>
+<p><strong>您在找什么？</strong></p>
+<p class="has-small-font-size">搜索见解和服务</p>
+<aside class="widget widget_search">
+<form method="get" class="searchform" action="http://tecdat.cn/" role="search">
+<input type="text" class="search" name="s" value="" placeholder="关键词" ckeyboarddefined="true" style="margin-top: 28px;"><br>
+<input type="submit" class="searchsubmit" name="submit" value="搜索"><br>
+</form>
+</aside>
+</div>
+<div class="wp-block-column"></div>
+<div class="wp-block-column">
+<div class="wp-block-spacer" style="height: 68px;" aria-hidden="true"></div>
+<p class="has-text-align-center has-black-color has-text-color" style="font-size: 18px;"><strong>在wechat上关注我们</strong></p>
+<div class="wp-block-columns are-vertically-aligned-top has-2-columns">
+<div class="wp-block-column is-vertically-aligned-top" style="flex-basis: 50%;">
+<div class="wp-block-image">
+<figure class="aligncenter is-resized"><img loading="lazy" class="wp-image-8465" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/qrcode_for_gh_3893bf8edc76_258.jpg" alt="" width="88" height="88"></figure>
+</div>
+<p class="has-text-align-center has-black-color has-text-color has-normal-font-size">技术干货</p>
+</div>
+<div class="wp-block-column is-vertically-aligned-top" style="flex-basis: 50%;">
+<div class="wp-block-image">
+<figure class="aligncenter is-resized"><img loading="lazy" class="wp-image-8464" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/qrcode_for_gh_82049d10e62e_258.jpg" alt="" width="88" height="88"></figure>
+</div>
+<p class="has-text-align-center has-black-color has-text-color has-normal-font-size">最新洞察</p>
+</div>
+</div>
+<div class="wp-block-columns">
+<div class="wp-block-column" style="flex-basis: 33.33%;">
+<p class="has-text-align-center has-black-color has-text-color has-small-font-size"><a href="http://tecdat.cn/%e8%81%94%e7%b3%bb%e6%8b%93%e7%ab%aftecdat/">联系我们</a></p>
+</div>
+<div class="wp-block-column" style="flex-basis: 33.33%;">
+<p class="has-text-align-center has-black-color has-text-color has-small-font-size"><a href="http://tecdat.cn/%e5%b8%b8%e8%a7%81%e9%97%ae%e9%a2%98%e8%a7%a3%e7%ad%94/">FAQ</a></p>
+</div>
+<div class="wp-block-column" style="flex-basis: 33.33%;">
+<p class="has-text-align-center has-black-color has-text-color has-small-font-size"><a href="http://tecdat.cn/%e6%8b%93%e7%ab%af%e9%9a%90%e7%a7%81%e6%94%bf%e7%ad%96/">隐私政策</a></p>
+</div>
+</div>
+<p class="has-text-align-right has-small-font-size"><img loading="lazy" width="20" height="20" class="wp-image-1420" style="width: 20px;" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/ghs.png" alt="">©2016-2020 tecdat.沪ICP备13720518号</p>
+</div>
+</div></aside></div></div></div><!-- #footer -->		
+		<div id="sub-footer">
+		<div id="sub-footer-core">	
+
+						<!-- #footer-menu -->
+
+			
+			<!-- .copyright -->
+
+		</div>
+		</div>
+	</footer><!-- footer -->
+
+</div><!-- #body-core -->
+
+<div class="main-im">
+        <div id="open_im" class="open-im">&nbsp;</div>  
+        <div class="im_main" id="im_main">
+            <div id="close_im" class="close-im"><a href="javascript:void(0);" title="点击关闭">&nbsp;</a></div><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=3230046374&amp;site=qq&amp;menu=yes" target="_blank" class="im-qq qq-a" title="在线QQ客服">
+                <div class="qq-container"></div>
+                <div class="qq-hover-c"><img class="img-qq" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/qq.png"></div>
+                <span> QQ在线咨询</span>
+            </a><div class="im-tel"><div>售前咨询热线</div>
+                <div class="tel-num">15121130882</div><div>售后咨询热线</div>
+                <div class="tel-num">0571-63341498</div></div>
+            <div class="im-footer" style="position:relative">
+                <div class="weixing-container"><div class="weixing-show">
+                        <div class="weixing-txt">微信扫一扫<br>关注拓端助手</div>
+                        <img class="weixing-ma" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/18906812081-1.jpg">
+                        <div class="weixing-sanjiao"></div>
+                        <div class="weixing-sanjiao-big"></div>
+                    </div></div>
+                <div class="go-top"><a href="javascript:;" title="返回顶部"></a> </div>
+                <div style="clear:both"></div>
+            </div>
+        </div>
+    </div>
+					<div class="ays-pb-modals av_pop_modals_1" style="min-width: 100%;">
+                        <input type="hidden" value="fadeIn" id="ays_pb_modal_animate_in_1">
+                        <input type="hidden" value="fadeOutUpBig" id="ays_pb_modal_animate_out_1">
+                        <input type="hidden" value="1000" id="ays_pb_animation_close_speed_1">
+						<input id="ays-pb-modal-checkbox_1" class="ays-pb-modal-check" type="checkbox">
+                        
+                        
+                <div class="ays-pb-modal ays-pb-modal_1  " data-ays-flag="false" style=";width: 358px; height: 380px; background-color: #ffffff; color: #000000 !important; border: 1px  Dotted #ffffff; border-radius: 4px;font-family:Arial;">
+                    
+                    <h2 style="color: #000000 !important;font-family:Arial;">关注有关新文章的微信公众号</h2>
+                    <hr><div class="ays_content_box"><p class="is-hidden-mobile" style="text-align: center;">永远不要错过任何见解。当新文章发表时，我们会通过微信公众号向您推送。</p>
+<div class="wp-block-columns are-vertically-aligned-top has-2-columns">
+<div class="wp-block-column is-vertically-aligned-top" style="flex-basis: 50%;">
+<div class="wp-block-image">
+<figure class="aligncenter is-resized"><img class="wp-image-8465" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/qrcode_for_gh_3893bf8edc76_258.jpg" alt="" width="88" height="88"></figure>
+</div>
+<p class="has-text-align-center has-black-color has-text-color has-normal-font-size">技术干货</p>
+</div>
+<div class="wp-block-column is-vertically-aligned-top" style="flex-basis: 50%;">
+<div class="wp-block-image">
+<figure class="aligncenter is-resized"><img class="wp-image-8464" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/qrcode_for_gh_82049d10e62e_258.jpg" alt="" width="88" height="88"></figure>
+</div>
+<p class="has-text-align-center has-black-color has-text-color has-normal-font-size">最新洞察</p>
+</div>
+</div>
+<div class="wp-block-columns">
+<div class="wp-block-column" style="flex-basis: 33.33%;"></div>
+<div class="wp-block-column" style="flex-basis: 33.33%;"></div>
+<div class="wp-block-column" style="flex-basis: 33.33%;"></div>
+</div>
+</div>
+                    
+                    <p class="ays_pb_timer ays_pb_timer_1">This will close in <span data-seconds="0" data-ays-seconds="0">0</span> seconds</p>
+                    <label for="ays-pb-modal-checkbox_1" class="ays-pb-modal-close  ays-pb-modal-close_1 ays-pb-close-button-delay ays_pb_pause_sound_1" style="color: #000000 !important; font-family:Arial;top: 0; left: 10px;;transform:scale(1)"><svg class="ays_pb_material_close_icon" xmlns="https://www.w3.org/2000/svg" height="36px" viewBox="0 0 24 24" width="36px" fill="#000000" alt="Pop-up Close"><path d="M0 0h24v24H0z" fill="none"></path><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"></path></svg></label>
+                </div>
+                <script>
+                    (function($){
+                        
+                    })(jQuery);
+                </script><script>
+                                            jQuery(document).find('.ays-pb-modal_1').css({'top': 'unset',  'left': '0','right': '0','bottom':'0', 'margin': '0px auto'});
+                                           </script><div id="ays-pb-screen-shade_1" overlay="overlay_1"></div>
+                        <input type="hidden" class="ays_pb_delay_1" value="3600">
+                        <input type="hidden" class="ays_pb_scroll_1" value="258">
+                        <input type="hidden" class="ays_pb_abt_1" value="pageLoaded">
+					</div>                   
+                    <style>
+                        .ays-pb-modal_1{
+                            
+                        }
+
+                        .ays-pb-modal_1, .av_pop_modals_1 {
+                            display:none;
+                        }
+                        .ays-pb-modal-check:checked ~ #ays-pb-screen-shade_1 {
+                            opacity: 0.5;
+                            pointer-events: auto;
+                        }
+                        
+                        .ays_cmd_window {                            
+                            background-color: rgba( 255,255,255,0.85 );
+                        }
+                        
+                        .ays_cmd_window-cursor .ays_cmd_i-cursor-underscore {
+                            background-color: black;
+                        }
+                        
+                        .ays_cmd_window-cursor .ays_cmd_i-cursor-indicator {
+                            background-color: transparent;
+                        }
+
+                        .ays-pb-modal_1 .ays_fa-close-button:before{
+                            content: 'x';
+                        }
+
+                        .ays-pb-modal_1 .ays_pb_description > *, 
+                        .ays-pb-modal_1 .ays_pb_timer,
+                        .ays-pb-modal_1 .ays_content_box p{
+                            color: #000000;
+                            font-family: Arial;
+                        }
+
+                        .ays-pb-modal_1 .ays_pb_material_close_icon{
+                            fill: #000000 !important;
+                        }                        
+
+                        .ays-pb-modal_1 .ays_pb_material_close_circle_icon{
+                            fill: #000000 !important;
+                        }
+                        
+                        #ays-pb-screen-shade_1 {
+                            opacity: 0;
+                            background: #000;
+                            position: absolute;
+                            left: 0;
+                            right: 0;
+                            top: 0;
+                            bottom: 0;
+                            pointer-events: none;
+                            transition: opacity 0.8s;
+                        }
+
+                        .ays-pb-modal_1.fadeIn{
+                            animation-duration: 1s !important;
+                        }
+                        .ays-pb-modal_1.fadeOutUpBig {
+                            animation-duration: 1s !important;
+                            
+                        }
+
+
+                        .ays-pb-modal_1 .ays-pb-modal-close_1:hover .close-lil-btn {
+                             transform: rotate(180deg) scale(1) !important;
+                        }
+
+
+
+                        @media screen and (max-width: 768px){
+                            .ays-pb-modal_1{
+                                width: 68% !important;
+                                max-width: 100% !important;
+                            }
+
+                            .ays-pb-modal_1  .ays_pb_description > p{
+                                font-size: 13px !important;
+                                word-break: break-all;
+                                word-wrap: break-word;
+                            }
+                        }
+                    </style>
+                    
+                    <script>
+                    (function( $ ) {
+	                    'use strict';
+                        $(document).ready(function(){
+                            $(document).find('.ays-pb-modals').appendTo($(document.body));
+                            let ays_pb_scrollTop_1 = parseInt($(document).find('.ays_pb_scroll_1').val()),
+                                ays_pb_delayOpen_1 = parseInt($(document).find('.ays_pb_delay_1').val()),
+                                time_pb_1 = $(document).find('.ays_pb_timer_1 span').data('seconds'),
+                                ays_pb_effectIn_1 = $(document).find('#ays_pb_modal_animate_in_1').val(),
+                                ays_pb_animation_close_speed = $(document).find('#ays_pb_animation_close_speed_1').val(),
+                                ays_pb_animation_close_seconds = (ays_pb_animation_close_speed / 1000);
+                            if( ays_pb_delayOpen_1 == 0 &&  ays_pb_scrollTop_1 == 0){
+                                $(document).find('.av_pop_modals_1').css('display','block');
+                            }
+                            $(document).find('.ays_music_sound').css({'display':'none'});
+                            if(time_pb_1 !== undefined){
+                                if(time_pb_1 !== 0){
+                                    $(document).find('#ays-pb-modal-checkbox_1').trigger('click');
+                                    if(ays_pb_scrollTop_1 == 0){
+                                        var ays_pb_flag =  true;
+                                        $(document).find('.ays-pb-modal_1').css({
+                                            'animation-duration': ays_pb_animation_close_seconds + 's'
+                                        });
+                                        let timer_pb_1 = setInterval(function(){
+                                            let newTime_pb_1 = time_pb_1--;
+                                            let ays_pb_effectOut_1 = $(document).find('#ays_pb_modal_animate_out_1').val();
+                                            $(document).find('.ays_pb_timer_1 span').text(newTime_pb_1);
+                                            if(newTime_pb_1 <= 0){
+                                                $(document).find('.ays-pb-modal-close_1').trigger('click');
+                                                $(document).find('.ays-pb-modal_1').attr('class', 'ays-pb-modal ays-pb-modal_1  '+ays_pb_effectOut_1);
+                                                setTimeout(function(){ 
+                                                    $(document).find('.ays-pb-modal_1').css('display', 'none');
+                                                    $(document).find('.ays-pb-modal_1').attr('data-ays-flag','true');
+                                                }, ays_pb_animation_close_speed);
+                                                
+                                                clearInterval(timer_pb_1);
+                                            }
+                                            $(document).find('.ays-pb-modal-close_1').one('click', function(){ 
+                                                $(document).find('.av_pop_modals_1').css('pointer-events', 'none');
+                                                $(document).find('.ays-pb-modal_1').attr('class', 'ays-pb-modal ays-pb-modal_1  '+ays_pb_effectOut_1);
+                                                $(this).parents('.ays-pb-modals').find('iframe').each(function(){
+                                                    var key = /https:\/\/www.youtube.com/;
+                                                    var src = $(this).attr('src');
+                                                    $(this).attr('src', $(this).attr('src'));
+                                                });
+                                                $(this).parents('.ays-pb-modals').find('video.wp-video-shortcode').each(function(){
+                                                    if(typeof $(this).get(0) != 'undefined'){
+                                                        if ( ! $(this).get(0).paused ) {
+                                                            $(this).get(0).pause();
+                                                        }
+                                                    }
+                                                });
+                                                $(this).parents('.ays-pb-modals').find('audio.wp-audio-shortcode').each(function(){
+                                                    if(typeof $(this).get(0) != 'undefined'){
+                                                        if ( ! $(this).get(0).paused ) {
+                                                            $(this).get(0).pause();
+                                                        }
+                                                    }
+                                                });
+                                                var close_sound_src = $(document).find('#ays_pb_close_sound_1').attr('src');
+                                                if('1' && typeof close_sound_src !== 'undefined' && 'off' === 'on'){
+                                                    if('1' !== 0){
+                                                        var playPromise = $(document).find('#ays_pb_close_sound_1').get(0).play();
+                                                        if (playPromise !== undefined) {
+                                                            playPromise.then(function() {
+                                                                audio.pause();
+                                                            }).catch(function(error) {
+                                                                
+                                                            });
+                                                        }
+                                                    }
+                                                }
+                                                setTimeout(function(){
+                                                    $(document).find('.ays-pb-modal_1').css('display', 'none');
+                                                    $(document).find('.av_pop_modals_1').css('display', 'none');
+                                                    $(document).find('.ays-pb-modal_1').attr('data-ays-flag','true');
+                                                    if($('#ays_pb_close_sound_1').get(0) != undefined){
+                                                        if(!$('#ays_pb_close_sound_1').get(0).paused){
+                                                            $(document).find('.ays-pb-modal_1').css('display', 'none');
+                                                            var audio = $('#ays_pb_close_sound_1').get(0);
+                                                            audio.pause();
+                                                            audio.currentTime = 0;
+                                                        }
+                                                    }    
+                                                }, ays_pb_animation_close_speed);  
+                                                
+                                                $(document).find('#ays-pb-screen-shade_1').css({'opacity': '0', 'display': 'none'});
+                                                clearInterval(timer_pb_1);
+                                            });
+                                            $(document).on('keydown', function(event) { 
+                                                if('1' && ays_pb_flag){
+                                                    if (event.keyCode == 27) {                                    
+                                                        $(document).find('.ays-pb-modal-close_1').trigger('click');
+                                                    } 
+                                                }
+                                                ays_pb_flag = false;
+                                            });
+                                        },1000); 
+                                        if('1' && 'On' == 'On'){
+                                            $(document).find('.av_pop_modals_1').on('click', function(e) {
+                                                var pb_parent = $(this);
+                                                var pb_div = $(this).find('.ays-pb-modal_1');
+                                                if (!pb_div.is(e.target) && pb_div.has(e.target).length === 0){
+                                                    $(document).find('.ays-pb-modal-close_1').click();
+                                                }
+                                            });
+                                        }
+                                    }
+                                } else {
+                                     $(document).find('.ays_pb_timer_1').css('display','none');
+                                     $(document).find('.ays-pb-modal_1').css({
+                                        'animation-duration': ays_pb_animation_close_seconds + 's'
+                                     }); 
+                                     $(document).find('.ays-pb-modal-close_1').one('click', function(){
+                                        let ays_pb_effectOut_1 = $(document).find('#ays_pb_modal_animate_out_1').val();                                      
+                                        $(document).find('.av_pop_modals_1').css('pointer-events', 'none');
+                                        $(document).find('.ays-pb-modal_1').attr('class', 'ays-pb-modal ays-pb-modal_1  '+ays_pb_effectOut_1);
+                                        $(this).parents('.ays-pb-modals').find('iframe').each(function(){
+                                            var key = /https:\/\/www.youtube.com/;
+                                            var src = $(this).attr('src');
+                                            $(this).attr('src', $(this).attr('src'));
+                                        });
+                                        $(this).parents('.ays-pb-modals').find('video.wp-video-shortcode').each(function(){
+                                            if(typeof $(this).get(0) != 'undefined'){
+                                                if ( ! $(this).get(0).paused ) {
+                                                    $(this).get(0).pause();
+                                                }
+                                            }
+                                        });
+                                        $(this).parents('.ays-pb-modals').find('audio.wp-audio-shortcode').each(function(){
+                                            if(typeof $(this).get(0) != 'undefined'){
+                                                if ( ! $(this).get(0).paused ) {
+                                                    $(this).get(0).pause();
+                                                }
+                                            }
+                                        });
+                                        setTimeout(function(){
+                                            $(document).find('.ays-pb-modal_1').css('display', 'none');
+                                            $(document).find('.av_pop_modals_1').css('display', 'none');
+                                            $(document).find('.ays-pb-modal_1').attr('data-ays-flag','true');
+                                            if($('#ays_pb_close_sound_1').get(0) != undefined){
+                                                if(!$('#ays_pb_close_sound_1').get(0).paused){
+                                                    $(document).find('.ays-pb-modal_1').css('display', 'none');
+                                                    var audio = $('#ays_pb_close_sound_1').get(0);
+                                                    audio.pause();
+                                                    audio.currentTime = 0;
+                                                }
+                                            }   
+                                        }, ays_pb_animation_close_speed);  
+                                        
+                                        $(document).find('#ays-pb-screen-shade_1').css({'opacity': '0', 'display': 'none'});
+                                     });
+                                }
+                            }
+                            let count = 0;
+                            if( ays_pb_scrollTop_1 !== 0 ){
+                                $(window).scroll(function() {
+                                    if(($(this).scrollTop() >= ays_pb_scrollTop_1) && (count === 0)) {
+                                        count++;
+                                        if( ays_pb_delayOpen_1 !== 0 ){                        
+                                            $(document).find('.ays-pb-modal_1').css('animation-delay', ays_pb_delayOpen_1/1000);
+                                            setTimeout(function(){
+                                                $(document).find('.av_pop_modals_1').css('display','block');
+                                                $(document).find('.ays-pb-modal_1').addClass(ays_pb_effectIn_1);
+                                                $(document).find('.ays-pb-modal_1').css('display', 'block');
+                                                $(document).find('#ays-pb-screen-shade_1').css({'opacity': '0.5'});
+                                                $(document).find('.ays-pb-modal-check_1').prop('checked', true);
+                                            }, ays_pb_delayOpen_1);
+                                        }else{
+                                            $(document).find('.av_pop_modals_1').css('display','block');
+                                            $(document).find('.ays-pb-modal_1').addClass(ays_pb_effectIn_1);
+                                            $(document).find('.ays-pb-modal_1').css('display', 'block');
+                                            $(document).find('#ays-pb-screen-shade_1').css({'opacity': '0.5'});
+                                            $(document).find('.ays-pb-modal-check_1').prop('checked', true);
+                                        }
+                                        if (0 != 0 && 'off' != 'on') {
+                                            let close_button_delay = 0;
+                                            if (3600 != 0) {
+                                               close_button_delay += Math.floor(3600);
+                                            }
+                                            $(document).find('.ays-pb-modal-close_1').css({'display': 'none'});
+                                            setTimeout(function(){ 
+                                                $(document).find('.ays-pb-modal-close_1').css({'display': 'block'});
+                                            }, close_button_delay );
+                                        }
+                                        if(0 != 0){
+                                            $(document).find('.ays-pb-modal_1').css({
+                                                'animation-duration': ays_pb_animation_close_seconds + 's'
+                                            });
+                                            let timer_pb_1 = setInterval(function(){
+                                                let newTime_pb_1 = time_pb_1--;
+                                                let ays_pb_effectOut_1 = $(document).find('#ays_pb_modal_animate_out_1').val();
+                                                $(document).find('.ays_pb_timer_1 span').text(newTime_pb_1);
+                                                if(newTime_pb_1 <= 0){
+                                                    $(document).find('.ays-pb-modal-close_1').trigger('click');
+                                                    $(document).find('.ays-pb-modal_1').attr('class', 'ays-pb-modal ays-pb-modal_1   '+ays_pb_effectOut_1);
+                                                    setTimeout(function(){
+                                                        $(document).find('.ays-pb-modal_1').css('display', 'none');
+                                                        $(document).find('.ays-pb-modal_1').attr('data-ays-flag','true');
+                                                    }, ays_pb_animation_close_speed);
+                                                    
+                                                    clearInterval(timer_pb_1);
+                                                }
+                                                $(document).find('.ays-pb-modal-close_1').one('click', function(){      
+                                                    $(document).find('.av_pop_modals_1').css('pointer-events', 'none');
+                                                    $(document).find('.ays-pb-modal_1').attr('class', 'ays-pb-modal ays-pb-modal_1   '+ays_pb_effectOut_1);
+                                                    $(this).parents('.ays-pb-modals').find('iframe').each(function(){
+                                                        var key = /https:\/\/www.youtube.com/;
+                                                        var src = $(this).attr('src');
+                                                        $(this).attr('src', $(this).attr('src'));
+                                                    });
+                                                    $(this).parents('.ays-pb-modals').find('video.wp-video-shortcode').each(function(){
+                                                        if(typeof $(this).get(0) != 'undefined'){
+                                                            if ( ! $(this).get(0).paused ) {
+                                                                $(this).get(0).pause();
+                                                            }
+                                                        }
+                                                    });
+                                                    $(this).parents('.ays-pb-modals').find('audio.wp-audio-shortcode').each(function(){
+                                                        if(typeof $(this).get(0) != 'undefined'){
+                                                            if ( ! $(this).get(0).paused ) {
+                                                                $(this).get(0).pause();
+                                                            }
+                                                        }
+                                                    });
+                                                    setTimeout(function(){
+                                                        $(document).find('.ays-pb-modal_1').css('display', 'none');
+                                                        $(document).find('.av_pop_modals_1').css('display', 'none');
+                                                        $(document).find('.ays-pb-modal_1').attr('data-ays-flag','true');
+                                                        if($('#ays_pb_close_sound_1').get(0) != undefined){
+                                                            if(!$('#ays_pb_close_sound_1').get(0).paused){
+                                                                $(document).find('.ays-pb-modal_1').css('display', 'none');
+                                                                var audio = $('#ays_pb_close_sound_1').get(0);
+                                                                audio.pause();
+                                                                audio.currentTime = 0;
+                                                            }
+                                                        }   
+                                                    }, ays_pb_animation_close_speed);  
+                                                    
+                                                    $(document).find('#ays-pb-screen-shade_1').css({'opacity': '0', 'display': 'none'});
+                                                    clearInterval(timer_pb_1);
+                                                });
+                                                var ays_pb_flag = true;
+                                                $(document).on('keydown', function(event) { 
+                                                    if('1' && ays_pb_flag){
+                                                        if (event.keyCode == 27) {                                    
+                                                            $(document).find('.ays-pb-modal-close_1').trigger('click');
+                                                            ays_pb_flag = false;
+                                                        } 
+                                                    }
+                                                });
+                                            },1000);
+                                        }
+                                    }
+                                });
+                            }else{
+                                if( ays_pb_delayOpen_1 !== 0 ){
+                                    $(document).find('.ays-pb-modal_1').css('animation-delay', ays_pb_delayOpen_1/1000);
+                                    setTimeout(function(){
+                                        $(document).find('.av_pop_modals_1').css('display','block');
+                                        $(document).find('.ays-pb-modal_1').addClass(ays_pb_effectIn_1);
+                                        $(document).find('.ays-pb-modal_1').css('display', 'block');
+                                        $(document).find('#ays-pb-screen-shade_1').css({'opacity': '0.5'});
+                                        $(document).find('.ays-pb-modal-check_1').attr('checked', 'checked');
+
+                                        if(''){
+                                            $(document).find('body').removeClass('pb_enable_scroll');
+                                            $(document).find('body').addClass('pb_disable_scroll'); 
+
+                                            $(document).find('html').removeClass('pb_enable_scroll');
+                                            $(document).find('html').addClass('pb_disable_scroll');   
+                                           
+                                        }
+
+                                    }, ays_pb_delayOpen_1);
+                                } else {
+                                    if($(document).find('.ays_pb_abt_1').val() != 'clickSelector'){
+                                        $(document).find('.av_pop_modals_1').css('display','block');
+                                        $(document).find('.ays-pb-modal_1').addClass(ays_pb_effectIn_1);
+                                        $(document).find('.ays-pb-modal_1').css('display', 'block');
+                                        $(document).find('#ays-pb-screen-shade_1').css({'opacity': '0.5'});
+                                        $(document).find('.ays-pb-modal-check_1').attr('checked', 'checked');
+
+                                        if(''){
+                                            $(document).find('body').removeClass('pb_enable_scroll');
+                                            $(document).find('body').addClass('pb_disable_scroll'); 
+
+                                            $(document).find('html').removeClass('pb_enable_scroll');
+                                            $(document).find('html').addClass('pb_disable_scroll');   
+                                           
+                                        }
+                                    }
+                                }
+                            }
+                            if ('On' != 'On'){
+                                $(document).find('#ays-pb-screen-shade_1').css({'opacity': '0', 'display': 'none !important', 'pointer-events': 'none', 'background': 'none'});
+                                $(document).find('.ays-pb-modal_1').css('pointer-events', 'auto');
+                                $(document).find('.av_pop_modals_1').css('pointer-events','none');
+                            };
+                            if($(document).find('.ays-pb-modals video').hasClass('wp-video-shortcode')){
+                                var videoWidth  = $(document).find('.ays-pb-modals video.wp-video-shortcode').attr('width');
+                                var videoHeight = $(document).find('.ays-pb-modals video.wp-video-shortcode').attr('height');
+                                setTimeout(function(){
+                                    $(document).find('.ays-pb-modals .wp-video').removeAttr('style');
+                                    $(document).find('.ays-pb-modals .mejs-container').removeAttr('style');
+                                    $(document).find('.ays-pb-modals video.wp-video-shortcode').removeAttr('style');
+
+                                    $(document).find('.ays-pb-modals .wp-video').css({'width': '100%'});
+                                    $(document).find('.ays-pb-modals .mejs-container').css({'width': '100%','height': videoHeight + 'px'});
+                                    $(document).find('.ays-pb-modals video.wp-video-shortcode').css({'width': '100%','height': videoHeight + 'px'});
+                                },1000);
+                            }
+                            if($(document).find('.ays-pb-modals iframe').attr('style') != ''){
+                                setTimeout(function(){
+                                    $(document).find('.ays-pb-modals iframe').removeAttr('style');
+                                },500);
+                            }
+                            if(0 == 0){
+                                if('1' && 'On' == 'On'){
+                                    $(document).find('.av_pop_modals_1').on('click', function(e) {
+                                        var pb_parent = $(this);
+                                        var pb_div = $(this).find('.ays-pb-modal_1');
+                                        if (!pb_div.is(e.target) && pb_div.has(e.target).length === 0){
+                                            $(document).find('.ays-pb-modal-close_1').click();
+                                        }
+                                    });
+                                }
+                                var ays_pb_flag = true;
+                                $(document).on('keydown', function(event) { 
+                                    if('1' && ays_pb_flag){
+                                        if (event.keyCode == 27) {                                    
+                                            $(document).find('.ays-pb-modal-close_1').trigger('click');
+                                            ays_pb_flag = false;
+                                        } 
+                                    }
+                                });
+                            }
+                            
+                            jQuery(document).on('click', '.ays-pb-modal-close_1', function() {
+                                                $(document).find('body').removeClass('pb_disable_scroll');
+                                                $(document).find('body').addClass('pb_enable_scroll');
+
+                                                $(document).find('html').removeClass('pb_disable_scroll');
+                                                $(document).find('html').addClass('pb_enable_scroll');
+                            });           
+                           
+                        });
+                    })( jQuery );
+                </script><style>.wp-container-1 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-1 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-1 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-2 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-2 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-2 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-3 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-3 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-3 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-4 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-4 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-4 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-5 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-5 > * { margin: 0; }</style>
+<style>.wp-container-6 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-6 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-6 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-7 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-7 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-7 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-8 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-8 > * { margin: 0; }</style>
+<style>.wp-container-9 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-9 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-9 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-10 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-10 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-10 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-11 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-11 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-11 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-12 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-12 > * { margin: 0; }</style>
+<style>.wp-container-13 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-13 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-13 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-14 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-14 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-14 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-15 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-15 > * { margin: 0; }</style>
+<style>.wp-container-16 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-16 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-16 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-17 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-17 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-17 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-18 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-18 > * { margin: 0; }</style>
+<style>.wp-container-19 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-19 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-19 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-20 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-20 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-20 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-21 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-21 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-21 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-22 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-22 > * { margin: 0; }</style>
+<style>.wp-container-23 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-23 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-23 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-24 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-24 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-24 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-25 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-25 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-25 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-26 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-26 > * { margin: 0; }</style>
+<style>.wp-container-27 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-27 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-27 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-28 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-28 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-28 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-29 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-29 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-29 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-30 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-30 > * { margin: 0; }</style>
+<style>.wp-container-31 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-31 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-31 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-32 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-32 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-32 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-33 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-33 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-33 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-34 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-34 > * { margin: 0; }</style>
+<style>.wp-container-35 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-35 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-35 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-36 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-36 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-36 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-37 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-37 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-37 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-38 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-38 > * { margin: 0; }</style>
+<style>.wp-container-39 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-39 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-39 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-40 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-40 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-40 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-41 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-41 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-41 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-42 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-42 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-42 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-43 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-43 > * { margin: 0; }</style>
+<style>.wp-container-44 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-44 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-44 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-45 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-45 > * { margin: 0; }</style>
+<style>.wp-container-46 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-46 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-46 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-47 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-47 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-47 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-48 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-48 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-48 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-49 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-49 > * { margin: 0; }</style>
+<style>.wp-container-50 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-50 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-50 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-51 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-51 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-51 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-52 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-52 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-52 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-53 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-53 > * { margin: 0; }</style>
+<style>.wp-container-54 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-54 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-54 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-55 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-55 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-55 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-56 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-56 > * { margin: 0; }</style>
+<style>.wp-container-57 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-57 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-57 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-58 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-58 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-58 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-59 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-59 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-59 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-60 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-60 > * { margin: 0; }</style>
+<style>.wp-container-61 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-61 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-61 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-62 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-62 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-62 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-63 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-63 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-63 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-64 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-64 > * { margin: 0; }</style>
+<style>.wp-container-65 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-65 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-65 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-66 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-66 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-66 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-67 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-67 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-67 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-68 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-68 > * { margin: 0; }</style>
+<style>.wp-container-69 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-69 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-69 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-70 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-70 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-70 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-71 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-71 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-71 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-72 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-72 > * { margin: 0; }</style>
+<style>.wp-container-73 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-73 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-73 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-74 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-74 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-74 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-75 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-75 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-75 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-76 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-76 > * { margin: 0; }</style>
+<style>.wp-container-77 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-77 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-77 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-78 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-78 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-78 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-79 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-79 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-79 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-80 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-80 > * { margin: 0; }</style>
+<style>.wp-container-81 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-81 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-81 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-82 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-82 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-82 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-83 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-83 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-83 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-84 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-84 > * { margin: 0; }</style>
+<style>.wp-container-85 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-85 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-85 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-86 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-86 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-86 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-87 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-87 > * { margin: 0; }</style>
+<style>.wp-container-88 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-88 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-88 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-89 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-89 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-89 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-90 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-90 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-90 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-91 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-91 > * { margin: 0; }</style>
+<style>.wp-container-92 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-92 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-92 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-93 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-93 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-93 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<style>.wp-container-94 {display: flex;gap: 2em;flex-wrap: nowrap;align-items: center;}.wp-container-94 > * { margin: 0; }</style>
+<style>.wp-container-95 > .alignleft { float: left; margin-inline-start: 0; margin-inline-end: 2em; }.wp-container-95 > .alignright { float: right; margin-inline-start: 2em; margin-inline-end: 0; }.wp-container-95 > .aligncenter { margin-left: auto !important; margin-right: auto !important; }</style>
+<link rel="stylesheet" id="ays-pb-css" href="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/ays-pb-public.css" type="text/css" media="all">
+<script type="text/javascript" id="code-prettify-js-before">
+var codePrettifyLoaderBaseUrl = "http:\/\/tecdat.cn\/wp-content\/plugins\/code-prettify\/prettify";
+</script>
+
+<script type="text/javascript" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/modernizr.js.下载" id="modernizr-js"></script>
+<script type="text/javascript" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/bootstrap.js.下载" id="thinkup-bootstrap-js"></script>
+<script type="text/javascript" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/main-frontend.js.下载" id="thinkup-frontend-js"></script>
+<script type="text/javascript" src="./R语言用贝叶斯线性回归、贝叶斯模型平均 (BMA)来预测工人工资 _ 拓端数据科技 _ Welcome to tecdat_files/show-on-scroll.js.下载" id="wow2-js"></script>
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?7183c92116feb5e2693e43a09eb0ce1c";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+</div></body></html>
